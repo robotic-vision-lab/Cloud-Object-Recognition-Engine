@@ -37,7 +37,7 @@ $ catkin\_make
 
 #### Server setup 
 
-We use CloudLab [3] as our remote computing facility in this example. We've
+We use CloudLab [4] as our remote computing facility in this example. We've
 created a profile (disk image) named 'ubuntu-14_04-ros-indigo-full' that 
 captures the entire cloud environment. This profile is shared within CloudLab 
 under the project 'core-robotics'. It consists of one x86 node running Ubuntu 
