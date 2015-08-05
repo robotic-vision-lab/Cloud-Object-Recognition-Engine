@@ -1,0 +1,19 @@
+<launch>
+  <group ns="core_client">
+      <node name="client_pointcloud_processor" pkg="core_client" type="client_pointcloud_processor" output="screen">
+          <param name="input" type="str" value="/camera/depth_registered/points" />
+          <param name="output" type="str" value="/client_pointcloud_processor/output" />
+          <param name="cull" type="bool" value="false" />
+          <param name="range_filter" type="bool" value="true" />
+          <param name="model_filter" type="bool" value="false" />
+          <param name="min_range" type="double" value="0" />
+          <param name="max_range" type="double" value="1.5" />
+          <param name="distance_threshold" type="double" value="0.015" />
+          <param name="entropy_threshold" type="double" value="0.5" />
+      </node>
+      <node name="client_pointcloud_xmit" pkg="core_client" type="client_pointcloud_xmit.py" args="$(arg server_ip_addr)" output="screen">
+          <param name="input" type="str" value="/client_pointcloud_processor/output" />
+          <param name="topic" type="str" value="/core_client_pointcloud/compressed" />
+      </node>
+  </group>
+</launch>

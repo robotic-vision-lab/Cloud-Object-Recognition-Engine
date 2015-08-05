@@ -1,0 +1,371 @@
+# ------------------------------------------------------------------------------------
+# Helper to use CORE from outside project
+#
+# target_link_libraries(my_fabulous_target CORE_XXX_LIBRARIES) where XXX is the 
+# upper cased xxx from : 
+# @CORECONFIG_AVAILABLE_COMPONENTS_LIST@
+#
+# CORE_INCLUDE_DIRS is filled with CORE and available 3rdparty headers
+# CORE_LIBRARY_DIRS is filled with CORE components libraries install directory and
+# 3rd party libraries paths
+# 
+#------------------------------------------------------------------------------------
+
+### ---[ Some useful macros
+macro(core_report_not_found _reason)
+  unset(CORE_FOUND)
+  unset(CORE_LIBRARIES)
+  unset(CORE_INCLUDE_DIRS)
+  unset(CORE_LIBRARY_DIRS)
+  unset(CORE_DEFINITIONS)
+  if(CORE_FIND_REQUIRED)
+    message(FATAL_ERROR ${_reason})
+  elseif(NOT CORE_FIND_QUIETLY)
+    message(WARNING ${_reason})
+  endif()
+  return()
+endmacro(core_report_not_found)
+
+macro(core_message)
+  if(NOT CORE_FIND_QUIETLY)
+    message(${ARGN})
+  endif(NOT CORE_FIND_QUIETLY)
+endmacro(core_message)
+
+# Remove duplicate libraries	
+macro(core_remove_duplicate_libraries _unfiltered_libraries _filtered_libraries)
+  set(${_filtered_libraries})
+  set(_debug_libraries)
+  set(_optimized_libraries)
+  set(_other_libraries)
+  set(_waiting_for_debug 0)
+  set(_waiting_for_optimized 0)
+  set(_library_position -1)
+  foreach(library ${${_unfiltered_libraries}})
+    if("${library}" STREQUAL "debug")
+      set(_waiting_for_debug 1)
+    elseif("${library}" STREQUAL "optimized")
+      set(_waiting_for_optimized 1)
+    elseif(_waiting_for_debug)
+      list(FIND _debug_libraries "${library}" library_position)
+      if(library_position EQUAL -1)
+        list(APPEND ${_filtered_libraries} debug ${library})
+        list(APPEND _debug_libraries ${library})
+      endif()
+      set(_waiting_for_debug 0)
+    elseif(_waiting_for_optimized)
+      list(FIND _optimized_libraries "${library}" library_position)
+      if(library_position EQUAL -1)
+        list(APPEND ${_filtered_libraries} optimized ${library})
+        list(APPEND _optimized_libraries ${library})
+      endif()
+      set(_waiting_for_optimized 0)
+    else("${library}" STREQUAL "debug")
+      list(FIND _other_libraries "${library}" library_position)
+      if(library_position EQUAL -1)
+        list(APPEND ${_filtered_libraries} ${library})
+        list(APPEND _other_libraries ${library})
+      endif()
+    endif("${library}" STREQUAL "debug")
+  endforeach(library)
+endmacro(core_remove_duplicate_libraries)
+
+### ---[ 3rd party libraries
+macro(find_boost)
+  if(CORE_ALL_IN_ONE_INSTALLER)
+    set(BOOST_ROOT "${CORE_ROOT}/3rdParty/Boost")
+  elseif(NOT BOOST_INCLUDEDIR)
+    set(BOOST_INCLUDEDIR "@Boost_INCLUDE_DIR@")
+  endif(CORE_ALL_IN_ONE_INSTALLER)
+  # use static Boost in Windows
+  if(WIN32)
+    set(Boost_USE_STATIC_LIBS ON)
+    set(Boost_USE_STATIC ON)
+  endif(WIN32)
+  if(${CMAKE_VERSION} VERSION_LESS 2.8.5)
+    SET(Boost_ADDITIONAL_VERSIONS "1.43" "1.43.0" "1.44" "1.44.0" "1.45" "1.45.0" "1.46.1" "1.46.0" "1.46" "1.47" "1.47.0")
+  else(${CMAKE_VERSION} VERSION_LESS 2.8.5)
+    SET(Boost_ADDITIONAL_VERSIONS "1.47" "1.47.0")
+  endif(${CMAKE_VERSION} VERSION_LESS 2.8.5)
+  # Disable the config mode of find_package(Boost)
+  set(Boost_NO_BOOST_CMAKE ON)
+  find_package(Boost 1.40.0 ${QUIET_} COMPONENTS system filesystem thread date_time iostreams)
+  set(BOOST_FOUND ${Boost_FOUND})
+  set(BOOST_INCLUDE_DIRS "${Boost_INCLUDE_DIR}")
+  set(BOOST_LIBRARY_DIRS "${Boost_LIBRARY_DIRS}")
+  set(BOOST_LIBRARIES ${Boost_LIBRARIES})
+  if(WIN32)
+    set(BOOST_DEFINITIONS ${BOOST_DEFINITIONS} -DBOOST_ALL_NO_LIB)
+  endif(WIN32)
+endmacro(find_boost)
+
+# Finds each component external libraries if any
+# The functioning is as following
+# try to find _lib
+# |--> _lib found ==> include the headers,
+# |                   link to its library directories or include _lib_USE_FILE
+# `--> _lib not found
+#                   |--> _lib is optional ==> disable it (thanks to the guardians) 
+#                   |                         and warn
+#                   `--> _lib is required
+#                                       |--> component is required explicitely ==> error
+#                                       `--> component is induced ==> warn and remove it
+#                                                                     from the list
+macro(find_external_library _component _lib _is_optional)
+  if("${_lib}" STREQUAL "boost")
+    find_boost()
+  endif("${_lib}" STREQUAL "boost")
+
+  string(TOUPPER "${_component}" COMPONENT)
+  string(TOUPPER "${_lib}" LIB)
+  if(${LIB}_FOUND)
+    list(APPEND CORE_${COMPONENT}_INCLUDE_DIRS ${${LIB}_INCLUDE_DIRS})
+    if(${LIB}_USE_FILE)
+      include(${${LIB}_USE_FILE})
+    else(${LIB}_USE_FILE)
+      list(APPEND CORE_${COMPONENT}_LIBRARY_DIRS "${${LIB}_LIBRARY_DIRS}")
+    endif(${LIB}_USE_FILE)
+    if(${LIB}_LIBRARIES)
+      list(APPEND CORE_${COMPONENT}_LIBRARIES "${${LIB}_LIBRARIES}")
+    endif(${LIB}_LIBRARIES)
+    if(${LIB}_DEFINITIONS)
+      list(APPEND CORE_${COMPONENT}_DEFINITIONS ${${LIB}_DEFINITIONS})
+    endif(${LIB}_DEFINITIONS)
+  else(${LIB}_FOUND)
+    if("${_is_optional}" STREQUAL "OPTIONAL")
+      add_definitions("-DDISABLE_${LIB}")
+      core_message("** WARNING ** ${_component} features related to ${_lib} will be disabled")
+    elseif("${_is_optional}" STREQUAL "REQUIRED")
+      if((NOT CORE_FIND_ALL) OR (CORE_FIND_ALL EQUAL 1))
+        core_report_not_found("${_component} is required but ${_lib} was not found")
+      elseif(CORE_FIND_ALL EQUAL 0)
+        # raise error and remove _component from CORE_TO_FIND_COMPONENTS
+        string(TOUPPER "${_component}" COMPONENT)
+        core_message("** WARNING ** ${_component} will be disabled cause ${_lib} was not found")
+        list(REMOVE_ITEM CORE_TO_FIND_COMPONENTS ${_component})
+      endif((NOT CORE_FIND_ALL) OR (CORE_FIND_ALL EQUAL 1))
+    endif("${_is_optional}" STREQUAL "OPTIONAL")
+  endif(${LIB}_FOUND)
+endmacro(find_external_library)
+
+macro(core_check_external_dependency _component)
+endmacro(core_check_external_dependency)
+
+# Flatten dependencies recursivity is great \o/
+macro(compute_dependencies TO_FIND_COMPONENTS)
+  foreach(component ${${TO_FIND_COMPONENTS}})
+    set(core_component core_${component})
+    if(${core_component}_int_dep AND (NOT CORE_FIND_ALL))
+      foreach(dependency ${${core_component}_int_dep})
+        list(FIND ${TO_FIND_COMPONENTS} ${component} pos)
+        list(FIND ${TO_FIND_COMPONENTS} ${dependency} found)
+        if(found EQUAL -1)
+          set(core_dependency core_${dependency})
+          if(${core_dependency}_int_dep)
+            list(INSERT ${TO_FIND_COMPONENTS} ${pos} ${dependency})
+            if(core_${dependency}_ext_dep)
+              list(APPEND core_${component}_ext_dep ${core_${dependency}_ext_dep})
+            endif(core_${dependency}_ext_dep)
+            if(core_${dependency}_opt_dep)
+              list(APPEND core_${component}_opt_dep ${core_${dependency}_opt_dep})
+            endif(core_${dependency}_opt_dep)
+            compute_dependencies(${TO_FIND_COMPONENTS})
+          else(${core_dependency}_int_dep)
+            list(INSERT ${TO_FIND_COMPONENTS} 0 ${dependency})
+          endif(${core_dependency}_int_dep)
+        endif(found EQUAL -1)
+      endforeach(dependency)
+    endif(${core_component}_int_dep AND (NOT CORE_FIND_ALL))
+  endforeach(component)
+endmacro(compute_dependencies)
+
+### ---[ Find CORE 
+if(CORE_FIND_QUIETLY)
+  set(QUIET_ QUIET)
+else(CORE_FIND_QUIETLY)
+  set(QUIET_)
+endif(CORE_FIND_QUIETLY)
+
+find_package(PkgConfig)
+
+file(TO_CMAKE_PATH "${CORE_DIR}" CORE_DIR)
+if(WIN32)
+  # COREConfig.cmake is installed to CORE_ROOT/cmake
+  get_filename_component(CORE_ROOT "${CORE_DIR}" PATH)
+else(WIN32)
+  # COREConfig.cmake is installed to CORE_ROOT/share/core-x.y
+  get_filename_component(CORE_ROOT "${CORE_DIR}" PATH)
+  get_filename_component(CORE_ROOT "${CORE_ROOT}" PATH)
+endif(WIN32)
+
+# check whether COREConfig.cmake is found into a CORE installation or in a build tree
+if(EXISTS "${CORE_ROOT}/include/core-${CORE_VERSION_MAJOR}.${CORE_VERSION_MINOR}/core/core_config.h")
+  # Found a CORE installation
+  # core_message("Found a CORE installation")
+  set(CORE_INCLUDE_DIRS "${CORE_ROOT}/include/core-${CORE_VERSION_MAJOR}.${CORE_VERSION_MINOR}")
+  set(CORE_LIBRARY_DIRS "${CORE_ROOT}/@LIB_INSTALL_DIR@")
+  if(EXISTS "${CORE_ROOT}/3rdParty")
+    set(CORE_ALL_IN_ONE_INSTALLER ON)
+  endif(EXISTS "${CORE_ROOT}/3rdParty")
+elseif(EXISTS "${CORE_DIR}/include/core/core_config.h")
+  # Found COREConfig.cmake in a build tree of CORE
+  # core_message("CORE found into a build tree.")
+  set(CORE_INCLUDE_DIRS "${CORE_DIR}/include") # for core_config.h
+  set(cORE_LIBRARY_DIRS "${CORE_DIR}/@LIB_INSTALL_DIR@")
+  set(CORE_SOURCES_TREE "@CMAKE_SOURCE_DIR@")
+else(EXISTS "${CORE_ROOT}/include/core-${CORE_VERSION_MAJOR}.${CORE_VERSION_MINOR}/core/core_config.h")
+  core_report_not_found("CORE can not be found on this machine")  
+endif(EXISTS "${CORE_ROOT}/include/core-${CORE_VERSION_MAJOR}.${CORE_VERSION_MINOR}/core/core_config.h")
+
+# Set a suffix for debug libraries
+set(CORE_DEBUG_SUFFIX "@CMAKE_DEBUG_POSTFIX@")
+set(CORE_RELEASE_SUFFIX "@CMAKE_RELEASE_POSTFIX@")
+
+set(core_all_components @CORECONFIG_AVAILABLE_COMPONENTS@ )
+list(LENGTH core_all_components CORE_NB_COMPONENTS)
+
+# List each component's internal dependencies
+@CORECONFIG_INTERNAL_DEPENDENCIES@
+
+# List each component's external dependencies (ext means mandatory and opt means optional)
+@CORECONFIG_EXTERNAL_DEPENDENCIES@
+
+@CORECONFIG_OPTIONAL_DEPENDENCIES@
+
+set(core_header_only_components geometry)
+
+include(FindPackageHandleStandardArgs)
+
+#check if user provided a list of components
+#if no components at all or full list is given set CORE_FIND_ALL
+if(CORE_FIND_COMPONENTS)
+  list(LENGTH CORE_FIND_COMPONENTS CORE_FIND_COMPONENTS_LENGTH)
+  if(CORE_FIND_COMPONENTS_LENGTH EQUAL CORE_NB_COMPONENTS)
+    set(CORE_TO_FIND_COMPONENTS ${core_all_components})
+    set(CORE_FIND_ALL 1)
+  else(CORE_FIND_COMPONENTS_LENGTH EQUAL CORE_NB_COMPONENTS)
+    set(CORE_TO_FIND_COMPONENTS ${CORE_FIND_COMPONENTS})    
+  endif(CORE_FIND_COMPONENTS_LENGTH EQUAL CORE_NB_COMPONENTS)
+else(CORE_FIND_COMPONENTS)
+  set(CORE_TO_FIND_COMPONENTS ${core_all_components})
+  set(CORE_FIND_ALL 1)
+endif(CORE_FIND_COMPONENTS)
+
+compute_dependencies(CORE_TO_FIND_COMPONENTS)
+
+# Compute external dependencies per component
+foreach(component ${CORE_TO_FIND_COMPONENTS})
+    foreach(opt ${core_${component}_opt_dep})
+      find_external_library(${component} ${opt} OPTIONAL)
+    endforeach(opt)
+    foreach(ext ${core_${component}_ext_dep})
+      find_external_library(${component} ${ext} REQUIRED)
+    endforeach(ext) 
+endforeach(component)
+
+foreach(component ${CORE_TO_FIND_COMPONENTS})
+  set(core_component core_${component})
+  string(TOUPPER "${component}" COMPONENT)
+
+  core_message(STATUS "looking for CORE_${COMPONENT}")
+
+  string(REGEX REPLACE "^cuda_(.*)$" "\\1" cuda_component "${component}")
+  string(REGEX REPLACE "^gpu_(.*)$" "\\1" gpu_component "${component}") 
+  
+  find_path(CORE_${COMPONENT}_INCLUDE_DIR
+    NAMES core/${component}
+          core/cuda/${cuda_component} core/cuda/${gpu_component} core/cuda/${component}
+          core/gpu/${cuda_component} core/gpu/${gpu_component} core/gpu/${component}
+    HINTS ${CORE_INCLUDE_DIRS}
+          "${CORE_SOURCES_TREE}"
+    PATH_SUFFIXES
+          ${component}/include
+          cuda/${cuda_component}/include 
+          gpu/${gpu_component}/include
+    DOC "path to ${component} headers"
+    NO_DEFAULT_PATH)
+
+  if(CORE_${COMPONENT}_INCLUDE_DIR)
+    list(APPEND CORE_${COMPONENT}_INCLUDE_DIRS "${CORE_${COMPONENT}_INCLUDE_DIR}")
+  else(CORE_${COMPONENT}_INCLUDE_DIR)
+    #core_message("No include directory found for core_${component}.")
+  endif(CORE_${COMPONENT}_INCLUDE_DIR)
+  
+  # Skip find_library for header only modules
+  list(FIND core_header_only_components ${component} _is_header_only)
+  if(_is_header_only EQUAL -1)
+    find_library(CORE_${COMPONENT}_LIBRARY ${core_component}${CORE_RELEASE_SUFFIX}
+      HINTS ${CORE_LIBRARY_DIRS}
+      DOC "path to ${core_component} library"
+      NO_DEFAULT_PATH)
+    get_filename_component(${component}_library_path 
+      ${CORE_${COMPONENT}_LIBRARY}
+      PATH)
+
+    find_library(CORE_${COMPONENT}_LIBRARY_DEBUG ${core_component}${CORE_DEBUG_SUFFIX}
+      HINTS ${CORE_LIBRARY_DIRS}
+      DOC "path to ${core_component} library debug"
+      NO_DEFAULT_PATH)
+    if(CORE_${COMPONENT}_LIBRARY_DEBUG)
+      get_filename_component(${component}_library_path_debug 
+        ${CORE_${COMPONENT}_LIBRARY_DEBUG}
+        PATH)
+    endif(CORE_${COMPONENT}_LIBRARY_DEBUG)
+
+    find_package_handle_standard_args(CORE_${COMPONENT} DEFAULT_MSG
+      CORE_${COMPONENT}_LIBRARY CORE_${COMPONENT}_INCLUDE_DIR)
+  else(_is_header_only EQUAL -1)
+    find_package_handle_standard_args(CORE_${COMPONENT} DEFAULT_MSG
+      CORE_${COMPONENT}_INCLUDE_DIR)  
+  endif(_is_header_only EQUAL -1)
+  
+  if(CORE_${COMPONENT}_FOUND)
+    if(NOT "${CORE_${COMPONENT}_INCLUDE_DIRS}" STREQUAL "")
+      list(REMOVE_DUPLICATES CORE_${COMPONENT}_INCLUDE_DIRS)
+    endif(NOT "${CORE_${COMPONENT}_INCLUDE_DIRS}" STREQUAL "")
+    list(APPEND CORE_INCLUDE_DIRS ${CORE_${COMPONENT}_INCLUDE_DIRS})
+    mark_as_advanced(CORE_${COMPONENT}_INCLUDE_DIRS)
+    if(_is_header_only EQUAL -1)
+      list(APPEND CORE_DEFINITIONS ${CORE_${COMPONENT}_DEFINITIONS})
+      list(APPEND CORE_LIBRARY_DIRS ${component_library_path})
+      if(CORE_${COMPONENT}_LIBRARY_DEBUG)
+        list(APPEND CORE_${COMPONENT}_LIBRARIES optimized ${CORE_${COMPONENT}_LIBRARY} debug ${CORE_${COMPONENT}_LIBRARY_DEBUG})
+        list(APPEND CORE_LIBRARY_DIRS ${component_library_path_debug})
+      else(CORE_${COMPONENT}_LIBRARY_DEBUG)
+        list(APPEND CORE_${COMPONENT}_LIBRARIES ${CORE_${COMPONENT}_LIBRARY})
+      endif(CORE_${COMPONENT}_LIBRARY_DEBUG)
+      list(APPEND CORE_LIBRARIES ${CORE_${COMPONENT}_LIBRARIES})
+      mark_as_advanced(CORE_${COMPONENT}_LIBRARY CORE_${COMPONENT}_LIBRARY_DEBUG)
+    endif(_is_header_only EQUAL -1)    
+    # Append internal dependencies
+    foreach(int_dep ${core_${component}_int_dep})
+      string(TOUPPER "${int_dep}" INT_DEP)
+      if(CORE_${INT_DEP}_FOUND)
+        list(APPEND CORE_${COMPONENT}_INCLUDE_DIRS ${CORE_${INT_DEP}_INCLUDE_DIRS})
+        if(CORE_${INT_DEP}_LIBRARIES)
+          list(APPEND CORE_${COMPONENT}_LIBRARIES "${CORE_${INT_DEP}_LIBRARIES}")
+        endif(CORE_${INT_DEP}_LIBRARIES)	
+      endif(CORE_${INT_DEP}_FOUND)
+    endforeach(int_dep)
+  endif(CORE_${COMPONENT}_FOUND)
+endforeach(component)
+
+if(NOT "${CORE_INCLUDE_DIRS}" STREQUAL "")
+  list(REMOVE_DUPLICATES CORE_INCLUDE_DIRS)
+endif(NOT "${CORE_INCLUDE_DIRS}" STREQUAL "")
+
+if(NOT "${CORE_LIBRARY_DIRS}" STREQUAL "")
+  list(REMOVE_DUPLICATES CORE_LIBRARY_DIRS)
+endif(NOT "${CORE_LIBRARY_DIRS}" STREQUAL "")
+
+list(APPEND CORE_DEFINITIONS "@SSE_FLAGS@")
+
+if(NOT "${CORE_DEFINITIONS}" STREQUAL "")
+  list(REMOVE_DUPLICATES CORE_DEFINITIONS)
+endif(NOT "${CORE_DEFINITIONS}" STREQUAL "")
+
+core_remove_duplicate_libraries(CORE_LIBRARIES CORE_DEDUP_LIBRARIES)
+set(CORE_LIBRARIES ${CORE_DEDUP_LIBRARIES})
+
+find_package_handle_standard_args(CORE DEFAULT_MSG CORE_LIBRARIES CORE_INCLUDE_DIRS)
+mark_as_advanced(CORE_LIBRARIES CORE_INCLUDE_DIRS CORE_LIBRARY_DIRS)

@@ -1,0 +1,12 @@
+/**
+  \addtogroup learning Module learning
+
+  \section secLearningPresentation Overview
+
+  The <b>core_learning</b> library contains machine learning algorithms for 
+  training on 3D point cloud data.
+	
+  \section secLearningRequirements Requirements
+  - \ref common "common"
+
+*/

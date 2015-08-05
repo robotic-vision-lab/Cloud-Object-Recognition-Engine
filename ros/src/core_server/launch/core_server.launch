@@ -1,0 +1,16 @@
+<launch>
+  <group ns="core_server">
+      <node name="server_pointcloud_recv" pkg="core_server" type="server_pointcloud_recv.py" output="screen" >
+          <param name="input" type="str" value="/core_client_pointcloud/compressed" />
+          <param name="output" type="str" value="/core_server_pointcloud/output" />
+      </node>
+      <node name="server_pointcloud_processor" pkg="core_server" type="server_pointcloud_processor" output="screen" >
+          <param name="input" type="str" value="/core_server_pointcloud/output" />
+          <param name="range_filter" type="bool" value="false" />
+          <param name="model_filter" type="bool" value="false" />
+          <param name="min_range" type="double" value="0" />
+          <param name="max_range" type="double" value="1.5" />
+          <param name="distance_threshold" type="double" value="0.015" />  
+      </node>
+  </group>
+</launch>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package>
+  <name>core_client</name>
+  <version>0.0.0</version>
+  <description>
+    The CORE client package.
+  </description>
+  <maintainer email="beksi@cs.umn.edu">William J. Beksi</maintainer>
+  <license>Apache License Version 2.0</license>
+  
+  <author email="beksi@cs.umn.edu">William J. Beksi</author> -->
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>core_msgs</build_depend>
+  <build_depend>libpcl-all-dev</build_depend>
+  <build_depend>message_generation</build_depend>
+
+  <run_depend>rospy</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>core_msgs</run_depend>
+  <run_depend>libpcl-all</run_depend>
+  <run_depend>message_runtime</run_depend>
+</package>

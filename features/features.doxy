@@ -1,0 +1,16 @@
+/**
+  \addtogroup features Module features
+
+  \section secFeaturesPresentation Overview
+
+  The <b>core_features</b> library contains data structures and mechanisms for 
+  3D feature estimation from point cloud data. <i>3D features</i> are
+  representations at a certain 3D point or position in space, which describe
+  geometrical patterns based on the information available around the point. The
+  data space selected around the query point is usually referred as the
+  <b>k-neighborhood</b>. 
+
+  \section secFeaturesRequirements Requirements
+  - \ref common "common"
+
+*/

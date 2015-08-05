@@ -1,0 +1,15 @@
+/** \mainpage CORE API Documentation
+
+<h1>Overview</h1>
+
+The <b>Cloud-based Object Recognition Engine (CORE)</b> is a <b>large scale, 
+open project</b>[1] for performing 3D object recognition. 
+
+CORE has been successfully compiled and deployed on the Ubuntu Linux platform. 
+To simplify development, CORE is split into a series of smaller code libraries, 
+that can be compiled separately. This modularity is important for distributing 
+CORE on platforms with reduced computational or size constraints. 
+
+Please visit https://github.com/wjbeksi/core for more information.
+
+*/

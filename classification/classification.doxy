@@ -1,0 +1,12 @@
+/**
+  \addtogroup classification Module classification
+
+  \section secClassificationPresentation Overview
+
+  The <b>core_classification</b> library contains machine learning algorithms
+  for classifying 3D point cloud data.
+
+  \section secClassificationRequirements Requirements
+  - \ref common "common"
+
+*/

@@ -1,0 +1,12 @@
+/**
+  \addtogroup common Module common
+
+  \section secCommonPresentation Overview
+
+  The <b>core_common</b> library contains the common data structures and methods
+  used by the majority of CORE libraries.  
+	
+  \section secCommonRequirements Requirements
+  - none
+
+*/

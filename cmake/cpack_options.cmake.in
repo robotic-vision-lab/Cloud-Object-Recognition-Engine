@@ -1,0 +1,49 @@
+set(CPACK_PACKAGE_NAME "@PROJECT_NAME@")
+set(CPACK_PACKAGE_VENDOR "CORE.org")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Cloud-based Object Recognition Engine (CORE)")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "@PROJECT_NAME@ @CORE_VERSION@")
+#set(CPACK_RESOURCE_FILE_LICENSE "@PROJECT_SOURCE_DIR@/LICENSE.txt")
+#set(CPACK_RESOURCE_FILE_README "@PROJECT_SOURCE_DIR@/AUTHORS.txt")
+
+@CORE_CPACK_COMPONENTS@
+
+if((WIN32 OR UNIX) AND (CPACK_GENERATOR STREQUAL "NSIS"))
+  set(CPACK_NSIS_DISPLAY_NAME "@PROJECT_NAME@-@CORE_VERSION@")
+#  set(CPACK_NSIS_MUI_ICON "@PROJECT_SOURCE_DIR@/cmake/images/core.ico")
+#  set(CPACK_NSIS_MUI_UNIICON "@PROJECT_SOURCE_DIR@/cmake/images/core.ico")
+  set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.core.org")
+  set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.core.org")
+  set(CPACK_NSIS_MODIFY_PATH ON)
+  set(CPACK_PACKAGE_EXECUTABLES @CORE_EXECUTABLES@)
+#  set(CPACK_NSIS_MENU_LINKS 
+#      "share/doc/core/tutorials/html/index.html" "Tutorials"
+#      "share/doc/core/tutorials/html/sources" "Tutorials sources"
+#      "share/doc/core/html/core-@CORE_MAJOR_VERSION@.@CORE_MINOR_VERSION@.chm" "Documentation"
+#      "http://www.core.org" "CORE Website")
+  #set(CPACK_NSIS_MENU_LINKS "share/doc/@PROJECT_NAME@/user_guide.pdf" "User's guide")
+  #set(CPACK_NSIS_MENU_LINKS "share/doc/@PROJECT_NAME@/developer_guide.pdf" "Developer's guide")
+#  if(WIN32 AND NOT UNIX)
+    # There is a bug in NSI that does not handle full unix paths properly. Make
+    # sure there is at least one set of four (4) backlasshes.
+#    set(CPACK_PACKAGE_ICON "@PROJECT_SOURCE_DIR@/cmake/images\\\\core_horz_large_pos.bmp")
+#  else(WIN32 AND NOT UNIX)
+#    set(CPACK_PACKAGE_ICON "@PROJECT_SOURCE_DIR@/cmake/images/core_horz_large_pos.bmp")
+#  endif(WIN32 AND NOT UNIX)
+endif()
+
+if(UNIX AND ((CPACK_GENERATOR STREQUAL "DEB") OR (CPACK_GENERATOR STREQUAL "RPM")))
+  # Define stuff for the DEB/RPM packages
+  set(CPACK_PACKAGE_CONTACT "core-developers@core.org")
+endif()
+
+if(UNIX AND (CPACK_GENERATOR STREQUAL "DEB"))
+  set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+endif()
+
+if(APPLE AND (CPACK_GENERATOR STREQUAL "PackageMaker"))
+  # Define stuff for the PackageMaker packages
+  set(CPACK_OSX_PACKAGE_VERSION 10.5)
+  set(CPACK_PACKAGE_CONTACT "core-developers@core.org")
+  set(CPACK_SET_DESTDIR ON)
+  set(CPACK_PACKAGING_INSTALL_PREFIX /usr/local)
+endif()

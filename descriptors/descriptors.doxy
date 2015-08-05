@@ -1,0 +1,17 @@
+/**
+  \addtogroup descriptors Module descriptors 
+
+  \section secDescriptorsPresentation Overview
+
+The <b>core_descriptors</b> library contains data structures and mechanisms for 
+computing 3D descriptors from point cloud data. 3D descriptors are mathematical
+representations of an object's surface. Many different features (position, 
+color, surface normals) can be used in the creation of a descriptor.
+
+  \section secDescriptorsRequirements Requirements
+  - \ref common "common"
+  - \ref filters "filters"
+  - \ref segmentation "segmentation"
+  - \ref features "features"
+
+*/
