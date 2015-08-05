@@ -26,7 +26,7 @@ $ sudo make install
 $ echo '/usr/local/lib' | sudo tee /etc/ld.so.conf.d/usr-local-lib.conf > /dev/null  
 $ sudo ldconfig  
 
-Install ROS Indigo [1]. Then, build the ROS module:
+Install ROS Indigo [2]. Then, build the ROS module:
 
 $ cd core/ros  
 $ catkin\_make
