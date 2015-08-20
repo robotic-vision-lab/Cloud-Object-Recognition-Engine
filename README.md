@@ -3,7 +3,7 @@
 CORE is a framework for performing object recognition on 3D point cloud data 
 [1]. It includes machine learning classifiers, a Robot Operating System (ROS) 
 [2] module, and wraps existing data filters, feature descriptors, and 
-segmentation techniques found in the Point Cloud Library (PCL) [2]. The goal of 
+segmentation techniques found in the Point Cloud Library (PCL) [3]. The goal of 
 CORE is to leverage cloud computing facilities for the purpose of storing data, 
 training classifiers, and performing object recognition tasks offloaded by 
 network connected robots.
@@ -12,24 +12,24 @@ network connected robots.
 
 First, install PCL: 
 
-$ sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl  
-$ sudo apt-get update  
-$ sudo apt-get install libpcl-all  
+    $ sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl  
+    $ sudo apt-get update  
+    $ sudo apt-get install libpcl-all  
 
 Next, build CORE:
 
-$ cd core  
-$ mkdir build && cd build  
-$ cmake ..  
-$ make  
-$ sudo make install  
-$ echo '/usr/local/lib' | sudo tee /etc/ld.so.conf.d/usr-local-lib.conf > /dev/null  
-$ sudo ldconfig  
+    $ cd core  
+    $ mkdir build && cd build  
+    $ cmake ..  
+    $ make  
+    $ sudo make install  
+    $ echo '/usr/local/lib' | sudo tee /etc/ld.so.conf.d/usr-local-lib.conf > /dev/null  
+    $ sudo ldconfig  
 
 Install ROS Indigo [2]. Then, build the ROS module:
 
-$ cd core/ros  
-$ catkin\_make
+    $ cd core/ros  
+    $ catkin_make
 
 ## Usage 
 
@@ -38,39 +38,39 @@ $ catkin\_make
 #### Server setup 
 
 We use CloudLab [4] as our remote computing facility in this example. We've
-created a profile (disk image) named 'ubuntu-14_04-ros-indigo-full' that 
+created a profile (disk image) named 'ubuntu-14\_04-ros-indigo-full' that 
 captures the entire cloud environment. This profile is shared within CloudLab 
 under the project 'core-robotics'. It consists of one x86 node running Ubuntu 
 14.04 with ROS Indigo installed.
 
 After starting an experiment with the above profile, clone and build CORE:
 
-$ git clone https://username@github.com/wjbeksi/core  
-$ cd core  
-$ mkdir build && cd build  
-$ cmake ..  
-$ make  
-$ sudo make install  
-$ echo '/usr/local/lib' | sudo tee /etc/ld.so.conf.d/usr-local-lib.conf > /dev/null  
-$ sudo ldconfig  
+    $ git clone https://username@github.com/wjbeksi/core  
+    $ cd core  
+    $ mkdir build && cd build  
+    $ cmake ..  
+    $ make  
+    $ sudo make install  
+    $ echo '/usr/local/lib' | sudo tee /etc/ld.so.conf.d/usr-local-lib.conf > /dev/null  
+    $ sudo ldconfig  
 
 Next, build the ROS module:
 
-$ cd core/ros  
-$ source /opt/ros/indigo/setup.bash  
-$ catkin\_make  
+    $ cd core/ros  
+    $ source /opt/ros/indigo/setup.bash  
+    $ catkin_make  
 
 Then, launch the rosbridge server node:
 
-$ cd core/ros   
-$ source devel/setup.bash   
-$ roslaunch rosbridge\_server rosbridge\_websocket.launch  
+    $ cd core/ros   
+    $ source devel/setup.bash   
+    $ roslaunch rosbridge_server rosbridge_websocket.launch  
 
 Finally, in another terminal launch the CORE server nodes:
 
-$ cd core/ros   
-$ source devel/setup.bash   
-$ roslaunch core\_server core\_server.launch  
+    $ cd core/ros   
+    $ source devel/setup.bash   
+    $ roslaunch core_server core_server.launch  
 
 #### Client setup 
 
@@ -79,13 +79,13 @@ assume that you have an RGB-D sensor connected, such as the Asus Xtion, with the
 necessary driver modules installed (OpenNI and PrimeSense). Proceed by launching
 the ROS OpenNI2 driver:
 
-$ roslaunch openni2\_launch openni2.launch depth\_registration:=true 
+    $ roslaunch openni2_launch openni2.launch depth_registration:=true 
 
 Then, launch the CORE client nodes: 
 
-$ cd core/ros   
-$ source devel/setup.bash   
-$ roslaunch core\_client core\_client.launch server\_ip\_addr:=xxx.xxx.xxx.xx:9090
+    $ cd core/ros   
+    $ source devel/setup.bash   
+    $ roslaunch core_client core_client.launch server_ip_addr:=xxx.xxx.xxx.xx:9090
 
 where 'xxx.xxx.xxx.xx' is the IP address of the CloudLab server found by using
 the command 'if\_config'.
@@ -104,7 +104,7 @@ First, create a file named 'pcd\_categories' that contains a list of absolute
 paths to PCD files, one category per line. The covariance files are written out 
 for each category under the directory 'covariance\_dir':
 
-$ covariance pcd\_categories covariance\_dir  
+    $ covariance pcd_categories covariance_dir  
 
 #### Learning an SVM model based on covariance descriptors
 
@@ -112,16 +112,17 @@ The learning parameter gamma is given as the first argument. The model is
 constructed using the file 'cov\_categories' which contains the absolute paths,
 one category per line, to the covariance files created in the previous step:
 
-$ learn\_svm\_covariance\_model 0.005 cov\_categories  
+    $ learn_svm_covariance_model 0.005 cov_categories  
 
 #### SVM classification based on covariance descriptors
 
 Now we can predict the classification label based on a test input PCD file and 
 the trained SVM model:
 
-$ predict\_svm\_covariance\_class pc\_1.pcd model.txt  
+    $ predict_svm_covariance_class pc_1.pcd model.txt  
 
 ## References
+
 [1] W.J. Beksi, J. Spruth and N. Papanikolopoulos, "CORE: A Cloud-based Object Recognition Engine for Robotics", IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), Hamburg, Germany, 2015.  
 [2] Robot Operating System: http://www.ros.org  
 [3] Point Cloud Library: http://www.pointclouds.org  
