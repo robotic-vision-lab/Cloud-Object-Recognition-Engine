@@ -10,6 +10,7 @@
 #include <string.h>
 #include <fstream>
 #include <vector>
+#include <svm.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/visualization/cloud_viewer.h>
 #include <boost/thread/thread.hpp>
@@ -19,7 +20,6 @@
 #include <core/segmentation/extract_clusters.h>
 #include <core/features/normals.h>
 #include <core/descriptors/covariance.h>
-#include "svm.h"
 
 int predictClass (const std::string, const std::string);
 

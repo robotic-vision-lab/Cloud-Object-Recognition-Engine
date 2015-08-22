@@ -12,8 +12,8 @@
 #include <fstream>
 #include <vector>
 #include <cerrno>
+#include <svm.h>
 #include <core/console/print.h>
-#include "svm.h"
 
 int learnModel (double, const std::string);
 
