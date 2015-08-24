@@ -10,20 +10,19 @@ CORE_ADD_DOC(${SUBSYS_NAME})
 
 if(build)
   set(srcs 
-      src/covariance.cpp)
+      src/covariance/covariance.cpp)
 
   set(incs
-    include/core/${SUBSYS_NAME}/covariance.h)
-
-  CORE_ADD_EXECUTABLE(covariance ${SUBSYS_NAME} 
-                     src/covariance.cpp)
-  target_link_libraries(covariance core_common core_filters 
-                        core_segmentation core_features ${PCL_LIBRARIES})
+    include/core/${SUBSYS_NAME}/covariance/covariance.h)
 
   set(LIB_NAME core_${SUBSYS_NAME})
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${PCL_INCLUDE_DIRS})
   CORE_ADD_LIBRARY(${LIB_NAME} ${SUBSYS_NAME} ${srcs} ${incs})
-  target_link_libraries(${LIB_NAME} core_common core_filters core_segmentation core_features)
+  target_link_libraries(${LIB_NAME} 
+                        core_common 
+                        core_filters 
+                        core_segmentation 
+                        core_features)
   CORE_MAKE_PKGCONFIG(${LIB_NAME} ${SUBSYS_NAME} "${SUBSYS_DESC}" "" "" "" "" "")
 
   # Install include files

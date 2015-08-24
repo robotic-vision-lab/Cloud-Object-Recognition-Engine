@@ -3,8 +3,8 @@
  *
  */
 
-#ifndef PREDICT_SVM_COVARIANCE_CLASS_H
-#define PREDICT_SVM_COVARIANCE_CLASS_H
+#ifndef COVARIANCE_PREDICT_CLASS_H
+#define COVARIANCE_PREDICT_CLASS_H
 
 #include <stdlib.h>
 #include <string.h>
@@ -19,8 +19,8 @@
 #include <core/filters/filter_model.h>
 #include <core/segmentation/extract_clusters.h>
 #include <core/features/normals.h>
-#include <core/descriptors/covariance.h>
+#include <core/descriptors/covariance/covariance.h>
 
-int predictClass (const std::string, const std::string);
+int covariancePredictClass (const std::string, const std::string);
 
-#endif  // PREDICT_SVM_COVARIANCE_CLASS_H
+#endif  // COVARIANCE_PREDICT_CLASS_H

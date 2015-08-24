@@ -19,8 +19,8 @@
 #include <core/filters/filter_model.h>
 #include <core/segmentation/extract_clusters.h>
 #include <core/features/normals.h>
-#include <core/features/curvatures.h>
 #include <core/features/sobel.h>
+#include <core/features/curvatures.h>
 
 int computeCovariance (const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &,
                        const pcl::PointCloud<pcl::Normal>::Ptr &,

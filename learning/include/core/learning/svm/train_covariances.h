@@ -3,8 +3,8 @@
  *
  */
 
-#ifndef LEARN_SVM_COVARIANCE_MODEL_H
-#define LEARN_SVM_COVARIANCE_MODEL_H
+#ifndef TRAIN_COVARIANCES_H
+#define TRAIN_COVARIANCES_H
 
 #include <stdlib.h>
 #include <string.h>
@@ -15,6 +15,6 @@
 #include <svm.h>
 #include <core/console/print.h>
 
-int learnModel (double, const std::string);
+int trainCovariances (double, const std::string);
 
-#endif  // LEARN_SVM_COVARIANCE_MODEL_H
+#endif  // TRAIN_COVARIANCES_H

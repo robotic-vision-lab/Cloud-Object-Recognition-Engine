@@ -3,7 +3,7 @@
  *
  */
 
-#include <core/descriptors/covariance.h>
+#include <core/descriptors/covariance/covariance.h>
 
 // For timing measurements
 #if 0
@@ -72,7 +72,7 @@ getPointClouds (const std::string dir_name, std::vector<std::string> &point_clou
     point_clouds.push_back (dir_name + "/" + dirp->d_name);
   }
 
-  closedir(dp);
+  closedir (dp);
 
   return (0);
 }
@@ -134,7 +134,7 @@ computeFeatures (std::vector<double> &fx, std::vector<double> &fy, std::vector<d
                  const int offset, double* max_pos)
 {
   std::vector<int>::const_iterator pit; 
-  std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin() + offset;
+  std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin () + offset;
 
   *max_pos = 0;
   
@@ -218,15 +218,15 @@ computeCovariance (const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud_filtered,
   
   Eigen::MatrixXd feature_matrix (9, fx.size ());
 
-  computeMean(feature_matrix, fx, 0, max_pos);
-  computeMean(feature_matrix, fy, 1, max_pos);
-  computeMean(feature_matrix, fz, 2, max_pos);
-  computeMean(feature_matrix, fr, 3, 0);
-  computeMean(feature_matrix, fg, 4, 0);
-  computeMean(feature_matrix, fb, 5, 0);
-  computeMean(feature_matrix, fnx, 6, 0);
-  computeMean(feature_matrix, fny, 7, 0);
-  computeMean(feature_matrix, fnz, 8, 0);
+  computeMean (feature_matrix, fx, 0, max_pos);
+  computeMean (feature_matrix, fy, 1, max_pos);
+  computeMean (feature_matrix, fz, 2, max_pos);
+  computeMean (feature_matrix, fr, 3, 0);
+  computeMean (feature_matrix, fg, 4, 0);
+  computeMean (feature_matrix, fb, 5, 0);
+  computeMean (feature_matrix, fnx, 6, 0);
+  computeMean (feature_matrix, fny, 7, 0);
+  computeMean (feature_matrix, fnz, 8, 0);
  
   covariance_matrix = feature_matrix * feature_matrix.transpose () / (fx.size () - 1); 
   // Force matrix symmetry
@@ -243,7 +243,7 @@ computeCovariances (const std::string category_file, const std::string covarianc
 
   if (getCategories (category_file, categories) < 0)
     return (-1);
-  omp_set_nested(1);
+  omp_set_nested (1);
   #pragma omp parallel for
   for (size_t i = 0; i < categories.size (); ++i)
   {
@@ -319,15 +319,15 @@ computeCovariances (const std::string category_file, const std::string covarianc
       Eigen::MatrixXd feature_matrix (9, fx.size ());
 
       std::cout << "Computing means ... ";
-      computeMean(feature_matrix, fx, 0, max_pos);
-      computeMean(feature_matrix, fy, 1, max_pos);
-      computeMean(feature_matrix, fz, 2, max_pos);
-      computeMean(feature_matrix, fr, 3, 0);
-      computeMean(feature_matrix, fg, 4, 0);
-      computeMean(feature_matrix, fb, 5, 0);
-      computeMean(feature_matrix, fnx, 6, 0);
-      computeMean(feature_matrix, fny, 7, 0);
-      computeMean(feature_matrix, fnz, 8, 0);
+      computeMean (feature_matrix, fx, 0, max_pos);
+      computeMean (feature_matrix, fy, 1, max_pos);
+      computeMean (feature_matrix, fz, 2, max_pos);
+      computeMean (feature_matrix, fr, 3, 0);
+      computeMean (feature_matrix, fg, 4, 0);
+      computeMean (feature_matrix, fb, 5, 0);
+      computeMean (feature_matrix, fnx, 6, 0);
+      computeMean (feature_matrix, fny, 7, 0);
+      computeMean (feature_matrix, fnz, 8, 0);
       std::cout << "done." << std::endl;
  
       std::cout << "Computing covariance ... ";
@@ -375,29 +375,6 @@ computeCovariances (const std::string category_file, const std::string covarianc
       fs.close ();
     }  
   }
-
-  return (0);
-}
-
-void
-printHelp (int, char** argv)
-{
-  CORE_INFO ("Syntax is: %s categories_in (directory list of pcd files) covariances_out (directory path to output covariance files)\n", argv[0]);
-}
-
-int 
-main (int argc, char** argv)
-{
-  if (argc < 3)
-  {
-    printHelp (argc, argv);
-    return (-1);
-  } 
-
-  std::string category_file = argv[1];
-  std::string covariance_dir = argv[2];
-
-  computeCovariances (category_file, covariance_dir);
 
   return (0);
 }

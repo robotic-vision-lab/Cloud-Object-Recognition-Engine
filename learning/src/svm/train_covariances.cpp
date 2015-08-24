@@ -3,7 +3,7 @@
  *
  */
 
-#include <core/learning/learn_svm_covariance_model.h>
+#include <core/learning/svm/train_covariances.h>
 
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 
@@ -59,7 +59,7 @@ getCovariances (const std::string dir_name, std::vector<std::string> &covariance
 }
 
 int
-learnModel (double gamma, const std::string category_file_list)
+trainCovariances (double gamma, const std::string category_file_list)
 {
   std::vector<std::string> categories;
   std::vector<std::string> covariances;
@@ -73,7 +73,7 @@ learnModel (double gamma, const std::string category_file_list)
 
   if ((ret_val = getCategories (category_file_list, categories)) < 0)
     return (-1);
-  for (std::vector<std::string>::iterator it = categories.begin(); it != categories.end (); ++it)
+  for (std::vector<std::string>::iterator it = categories.begin (); it != categories.end (); ++it)
   {
     if ((ret_val = getCovariances(*it, covariances)) < 0)
       continue;
@@ -107,7 +107,7 @@ learnModel (double gamma, const std::string category_file_list)
       nodes.push_back (node);
       data.push_back (nodes);     
       labels.push_back (label); 
-      fs.close();
+      fs.close ();
     }
     // Update the label when changing category
     ++label;
@@ -175,28 +175,5 @@ learnModel (double gamma, const std::string category_file_list)
   free (prob.x);
   free (x_space);
 
-  return (0);
-}
-
-void
-printHelp (int, char** argv)
-{
-  CORE_INFO ("Syntax is: %s gamma (learning parameter) categories (directory list of covariances)\n", argv[0]);
-}
-
-int 
-main (int argc, char** argv)
-{
-  if (argc < 2)
-  {
-    printHelp (argc, argv);
-    return (-1);
-  } 
-
-  double gamma = static_cast<double> (atof (argv[1]));
-  std::string category_file_list = argv[2];
-
-  learnModel (gamma, category_file_list);
-  
   return (0);
 }

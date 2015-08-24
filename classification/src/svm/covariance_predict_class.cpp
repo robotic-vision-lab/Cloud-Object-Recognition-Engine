@@ -3,7 +3,7 @@
  *  
  */ 
 
-#include <core/classification/predict_svm_covariance_class.h>
+#include <core/classification/svm/covariance_predict_class.h>
 
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 
@@ -93,7 +93,7 @@ displayPointClouds(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud_filtered,
 #endif
 
 int
-predictClass (const std::string pcd_file, const std::string model_file)
+covariancePredictClass (const std::string pcd_file, const std::string model_file)
 {
   struct svm_node* node; 
   struct svm_model* model;
@@ -200,29 +200,6 @@ predictClass (const std::string pcd_file, const std::string model_file)
    
   // WJB 2015-07-17: This function needs to be updated to work with the latest PCL API 
   //displayPointClouds(cloud_filtered, colored_class_cloud);
-
-  return (0);
-}
-
-void
-printHelp (int, char** argv)
-{
-  CORE_INFO ("Syntax is: %s pcd_file model_file\n", argv[0]);
-}
-
-int 
-main (int argc, char** argv)
-{
-  if (argc < 3)
-  {
-    printHelp (argc, argv);
-    return (-1);
-  } 
-
-  std::string pcd_file = argv[1];
-  std::string model_file = argv[2];
-
-  predictClass (pcd_file, model_file);
 
   return (0);
 }
