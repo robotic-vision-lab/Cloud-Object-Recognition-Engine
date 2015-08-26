@@ -1,6 +1,6 @@
 set(SUBSYS_NAME descriptors)
 set(SUBSYS_DESC "Object recognition descriptors library")
-set(SUBSYS_DEPS common filters segmentation features)
+set(SUBSYS_DEPS common utils filters segmentation features)
 
 set(build TRUE)
 CORE_SUBSYS_OPTION(build ${SUBSYS_NAME} ${SUBSYS_DESC} ON)
@@ -20,6 +20,7 @@ if(build)
   CORE_ADD_LIBRARY(${LIB_NAME} ${SUBSYS_NAME} ${srcs} ${incs})
   target_link_libraries(${LIB_NAME} 
                         core_common 
+                        core_utils
                         core_filters 
                         core_segmentation 
                         core_features)

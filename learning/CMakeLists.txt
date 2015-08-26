@@ -1,6 +1,6 @@
 set(SUBSYS_NAME learning)
 set(SUBSYS_DESC "Object recognition learning library")
-set(SUBSYS_DEPS common)
+set(SUBSYS_DEPS common utils)
 
 set(build TRUE)
 CORE_SUBSYS_OPTION(build ${SUBSYS_NAME} ${SUBSYS_DESC} ON)
@@ -19,7 +19,9 @@ if(build)
   set(LIB_NAME core_${SUBSYS_NAME})
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/3rdparty/libsvm)
   CORE_ADD_LIBRARY(${LIB_NAME} ${SUBSYS_NAME} ${srcs} ${incs})
-  target_link_libraries(${LIB_NAME} core_common)
+  target_link_libraries(${LIB_NAME} 
+                        core_common
+                        core_utils)
   CORE_MAKE_PKGCONFIG(${LIB_NAME} ${SUBSYS_NAME} "${SUBSYS_DESC}" "" "" "" "" "")
 
   # Install include files

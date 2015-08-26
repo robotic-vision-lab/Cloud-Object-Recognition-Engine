@@ -7,57 +7,6 @@
 
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 
-int 
-getCategories (const std::string file_name, std::vector<std::string> &categories)
-{
-  std::string line;
-  std::ifstream fs;
-
-  fs.open (file_name.c_str (), std::ios::in);
-  if (!fs.is_open () || fs.fail ())
-  {
-      CORE_ERROR ("Could not open file '%s'! Error : %s\n", file_name.c_str (), strerror (errno));
-      fs.close ();
-      return (-1);
-  }
-
-  while (!fs.eof ())
-  {
-    getline (fs, line);
-    if (line == "")
-      continue;
-    categories.push_back (line);
-  } 
-
-  fs.close ();
-
-  return (0);
-}
-
-int 
-getCovariances (const std::string dir_name, std::vector<std::string> &covariances)
-{
-  DIR* dp;
-  struct dirent* dirp;
-
-  if ((dp = opendir (dir_name.c_str ())) == NULL) 
-  {
-    CORE_ERROR ("Could not open directory '%s'! Error : %s\n", dir_name.c_str (), strerror (errno));
-    return (-1);
-  }
-
-  while ((dirp = readdir (dp)) != NULL) 
-  { 
-    if ((strcmp (dirp->d_name, ".") == 0) || (strcmp (dirp->d_name, "..") == 0))
-      continue;
-    covariances.push_back (dir_name + "/" + dirp->d_name);
-  }
-
-  closedir(dp);
-
-  return (0);
-}
-
 int
 trainCovariances (double gamma, const std::string category_file_list)
 {
@@ -75,7 +24,7 @@ trainCovariances (double gamma, const std::string category_file_list)
     return (-1);
   for (std::vector<std::string>::iterator it = categories.begin (); it != categories.end (); ++it)
   {
-    if ((ret_val = getCovariances(*it, covariances)) < 0)
+    if ((ret_val = getData (*it, covariances)) < 0)
       continue;
     while (!covariances.empty ())
     {

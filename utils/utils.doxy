@@ -1,0 +1,12 @@
+/**
+  \addtogroup utils Module utils
+
+  \section secUtilsPresentation Overview
+
+  The <b>core_utils</b> library contains utility functions used by the majority 
+  of CORE libraries.  
+	
+  \section secUtilsRequirements Requirements
+  - none
+
+*/

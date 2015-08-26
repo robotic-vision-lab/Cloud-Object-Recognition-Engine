@@ -1,6 +1,6 @@
 set(SUBSYS_NAME tools)
 set(SUBSYS_DESC "Useful CORE-based command line tools")
-set(SUBSYS_DEPS common filters segmentation features descriptors learning classification)
+set(SUBSYS_DEPS common utils filters segmentation features descriptors learning classification)
 
 set(build TRUE)
 CORE_SUBSYS_OPTION(build ${SUBSYS_NAME} ${SUBSYS_DESC} ON)

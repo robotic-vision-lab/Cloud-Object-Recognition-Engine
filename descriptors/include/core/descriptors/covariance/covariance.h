@@ -15,6 +15,7 @@
 #include <boost/filesystem.hpp>
 #include <unsupported/Eigen/MatrixFunctions>
 #include <core/console/print.h>
+#include <core/utils/utils.h>
 #include <core/filters/filter_range.h>
 #include <core/filters/filter_model.h>
 #include <core/segmentation/extract_clusters.h>

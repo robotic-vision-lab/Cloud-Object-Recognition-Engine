@@ -14,6 +14,7 @@
 #include <cerrno>
 #include <svm.h>
 #include <core/console/print.h>
+#include <core/utils/utils.h>
 
 int trainCovariances (double, const std::string);
 
