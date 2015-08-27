@@ -3,7 +3,7 @@
  *
  */
 
-#include <core/learning/svm/train_covariances.h>
+#include <core/learning/svm/svm_train_covariances.h>
 
 void
 printHelp (int, char** argv)
@@ -23,7 +23,7 @@ main (int argc, char** argv)
   double gamma = static_cast<double> (atof (argv[1]));
   std::string category_file_list = argv[2];
 
-  trainCovariances (gamma, category_file_list);
+  svmTrainCovariances (gamma, category_file_list);
   
   return (0);
 }

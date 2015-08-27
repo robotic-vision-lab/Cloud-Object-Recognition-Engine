@@ -3,8 +3,8 @@
  *
  */
 
-#ifndef TRAIN_COVARIANCES_H
-#define TRAIN_COVARIANCES_H
+#ifndef SVM_TRAIN_COVARIANCES_H
+#define SVM_TRAIN_COVARIANCES_H
 
 #include <stdlib.h>
 #include <string.h>
@@ -16,6 +16,6 @@
 #include <core/console/print.h>
 #include <core/utils/utils.h>
 
-int trainCovariances (double, const std::string);
+int svmTrainCovariances (double, const std::string);
 
-#endif  // TRAIN_COVARIANCES_H
+#endif  // SVM_TRAIN_COVARIANCES_H

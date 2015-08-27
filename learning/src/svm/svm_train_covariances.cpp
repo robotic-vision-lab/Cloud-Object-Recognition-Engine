@@ -3,12 +3,12 @@
  *
  */
 
-#include <core/learning/svm/train_covariances.h>
+#include <core/learning/svm/svm_train_covariances.h>
 
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 
 int
-trainCovariances (double gamma, const std::string category_file_list)
+svmTrainCovariances (double gamma, const std::string category_file_list)
 {
   std::vector<std::string> categories;
   std::vector<std::string> covariances;

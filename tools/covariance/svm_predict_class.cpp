@@ -3,7 +3,7 @@
  *  
  */ 
 
-#include <core/classification/svm/covariance_predict_class.h>
+#include <core/classification/svm/svm_covariance_predict_class.h>
 
 void
 printHelp (int, char** argv)
@@ -23,7 +23,7 @@ main (int argc, char** argv)
   std::string pcd_file = argv[1];
   std::string model_file = argv[2];
 
-  covariancePredictClass (pcd_file, model_file);
+  svmCovariancePredictClass (pcd_file, model_file);
 
   return (0);
 }

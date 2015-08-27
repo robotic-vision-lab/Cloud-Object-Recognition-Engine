@@ -3,7 +3,7 @@
  *  
  */ 
 
-#include <core/classification/svm/covariance_predict_class.h>
+#include <core/classification/svm/svm_covariance_predict_class.h>
 
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 
@@ -93,7 +93,7 @@ displayPointClouds(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud_filtered,
 #endif
 
 int
-covariancePredictClass (const std::string pcd_file, const std::string model_file)
+svmCovariancePredictClass (const std::string pcd_file, const std::string model_file)
 {
   struct svm_node* node; 
   struct svm_model* model;

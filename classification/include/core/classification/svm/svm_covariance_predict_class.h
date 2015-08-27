@@ -3,8 +3,8 @@
  *
  */
 
-#ifndef COVARIANCE_PREDICT_CLASS_H
-#define COVARIANCE_PREDICT_CLASS_H
+#ifndef SVM_COVARIANCE_PREDICT_CLASS_H
+#define SVM_COVARIANCE_PREDICT_CLASS_H
 
 #include <stdlib.h>
 #include <string.h>
@@ -21,6 +21,6 @@
 #include <core/features/normals.h>
 #include <core/descriptors/covariance/covariance.h>
 
-int covariancePredictClass (const std::string, const std::string);
+int svmCovariancePredictClass (const std::string, const std::string);
 
-#endif  // COVARIANCE_PREDICT_CLASS_H
+#endif  // SVM_COVARIANCE_PREDICT_CLASS_H
