@@ -18,8 +18,9 @@ filterDepthRange (const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud,
   range_cond->addComparison (pcl::FieldComparison<pcl::PointXYZRGB>::ConstPtr (new
     pcl::FieldComparison<pcl::PointXYZRGB> ("z", pcl::ComparisonOps::LT, max)));
 
-  pcl::ConditionalRemoval<pcl::PointXYZRGB> condrem (range_cond);
-  condrem.setInputCloud (cloud);
-  condrem.setKeepOrganized (true);
-  condrem.filter (*cloud_filtered);
+  pcl::ConditionalRemoval<pcl::PointXYZRGB> range_filter;
+  range_filter.setCondition (range_cond);
+  range_filter.setInputCloud (cloud);
+  range_filter.setKeepOrganized (true);
+  range_filter.filter (*cloud_filtered); 
 }
