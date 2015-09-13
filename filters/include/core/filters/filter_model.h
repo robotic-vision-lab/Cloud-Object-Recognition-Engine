@@ -8,6 +8,7 @@
 
 #include <pcl/common/common_headers.h>
 #include <pcl/filters/extract_indices.h>
+#include <pcl/filters/extract_indices.h>
 #include <pcl/sample_consensus/ransac.h>
 #include <pcl/sample_consensus/sac_model_plane.h>
 
