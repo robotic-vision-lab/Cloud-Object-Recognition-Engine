@@ -16,7 +16,7 @@
 #include <boost/thread/thread.hpp>
 #include <core/console/print.h>
 #include <core/filters/filter_range.h>
-#include <core/filters/filter_model.h>
+#include <core/filters/filter_plane.h>
 #include <core/segmentation/extract_clusters.h>
 #include <core/features/normals.h>
 #include <core/descriptors/covariance/covariance.h>

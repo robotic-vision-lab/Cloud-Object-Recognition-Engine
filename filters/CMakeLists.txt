@@ -11,11 +11,11 @@ CORE_ADD_DOC(${SUBSYS_NAME})
 if(build)
   set(srcs
     src/filter_range.cpp
-    src/filter_model.cpp)
+    src/filter_plane.cpp)
 
   set(incs
     include/core/${SUBSYS_NAME}/filter_range.h
-    include/core/${SUBSYS_NAME}/filter_model.h)
+    include/core/${SUBSYS_NAME}/filter_plane.h)
 
   set(LIB_NAME core_${SUBSYS_NAME})
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${PCL_INCLUDE_DIRS})

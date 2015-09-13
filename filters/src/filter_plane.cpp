@@ -3,7 +3,7 @@
  *
  */
 
-#include <core/filters/filter_model.h>
+#include <core/filters/filter_plane.h>
 
 int
 filterPlaneModel (pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud, float distance)

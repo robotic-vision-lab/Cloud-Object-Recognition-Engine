@@ -3,8 +3,8 @@
  *
  */
 
-#ifndef FILTER_MODEL_H 
-#define FILTER_MODEL_H 
+#ifndef FILTER_PLANE_H 
+#define FILTER_PLANE_H 
 
 #include <pcl/common/common_headers.h>
 #include <pcl/filters/extract_indices.h>
@@ -14,4 +14,4 @@
 
 int filterPlaneModel (pcl::PointCloud<pcl::PointXYZRGB>::Ptr &, float);
 
-#endif  // FILTER_MODEL_H 
+#endif  // FILTER_PLANE_H 
