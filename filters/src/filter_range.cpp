@@ -6,7 +6,7 @@
 #include <core/filters/filter_range.h>
 
 void
-filterDepthRange (const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud,
+filterRangeDepth (const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud,
                   pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud_filtered,
                   const float min, const float max)
 {

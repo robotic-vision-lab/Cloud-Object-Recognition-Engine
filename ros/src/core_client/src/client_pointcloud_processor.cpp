@@ -97,7 +97,7 @@ ClientPointCloudProcessor::cloudCallback(const sensor_msgs::PointCloud2ConstPtr&
 
   if (range_filter_) 
   {
-    filterDepthRange(cloud, cloud_filtered, min_range_, max_range_);
+    filterRangeDepth(cloud, cloud_filtered, min_range_, max_range_);
     is_filtered = true;
   }
 

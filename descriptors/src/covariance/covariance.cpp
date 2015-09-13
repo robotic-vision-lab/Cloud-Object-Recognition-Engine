@@ -217,7 +217,7 @@ computeCovariances (const std::string category_file, const std::string covarianc
       std::cout << "processing: " << point_cloud.c_str () << std::endl;
 
       std::cout << "Filtering range outliers ... ";
-      filterDepthRange (cloud, cloud_filtered, 0.0, 1.5);
+      filterRangeDepth (cloud, cloud_filtered, 0.0, 1.5);
       std::cout << "done." << std::endl;
  
       std::cout << "Filtering plane model ... ";
