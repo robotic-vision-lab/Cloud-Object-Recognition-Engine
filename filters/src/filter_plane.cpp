@@ -32,6 +32,7 @@ filterPlaneModel (pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud, float distance)
   eifilter.setInputCloud (cloud);
   eifilter.setIndices (inliers);
   eifilter.setNegative (true);
+  eifilter.setKeepOrganized (true);
   eifilter.filter (*cloud);
 
   return (0);
