@@ -116,10 +116,10 @@ one category per line, to the covariance files created in the previous step:
 
 #### SVM classification based on covariance descriptors
 
-Now we can predict the classification label based on a test input PCD file and 
-the trained SVM model:
+Now we can predict the classification labels of objects in a point cloud given 
+the trained SVM model and a test input PCD file:
 
-    $ svm_predict_class pc_1.pcd model.txt  
+    $ svm_predict_class model.txt pc_1.pcd 
 
 ## References
 
