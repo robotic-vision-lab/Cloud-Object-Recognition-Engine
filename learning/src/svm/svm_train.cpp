@@ -3,69 +3,22 @@
  *
  */
 
-#include <core/learning/svm/svm_train_covariances.h>
+#include <core/learning/svm/svm_train.h>
 
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 
 int
-svmTrainCovariances (double gamma, const std::string category_file_list)
+svmTrain (double gamma, std::vector<std::vector<svm_node> > data, std::vector<int> labels)
 {
-  std::vector<std::string> categories;
-  std::vector<std::string> covariances;
-  std::vector<std::vector<svm_node> > data;
-  std::vector<int> labels;
-  struct svm_parameter param;   
-  struct svm_problem prob;      
   struct svm_model* model;
+  struct svm_problem prob;      
   struct svm_node* x_space;     
-  int ret_val, label = 1;
+  struct svm_parameter param;   
 
-  if ((ret_val = getCategories (category_file_list, categories)) < 0)
-    return (-1);
-  for (std::vector<std::string>::iterator it = categories.begin (); it != categories.end (); ++it)
-  {
-    if ((ret_val = getData (*it, covariances)) < 0)
-      continue;
-    while (!covariances.empty ())
-    {
-      std::ifstream fs;
-      std::vector<svm_node> nodes;
-      svm_node node;
-      double value;
-      int index = 1;
-
-      std::string covariance = covariances.back ();
-      covariances.pop_back ();
-      fs.open (covariance.c_str (), std::ios::in);
-      if (!fs.is_open () || fs.fail ())
-      {
-        CORE_ERROR ("Could not open file '%s'! Error : %s\n", covariance.c_str (), strerror (errno));
-        fs.close ();
-        continue;
-      }
-      // Fill the feature vector
-      while (fs >> value)
-      {
-        node.index = index;
-        node.value = value;
-        nodes.push_back (node);
-        ++index;
-      }
-      // Terminate the feature vector
-      node.index = -1;
-      nodes.push_back (node);
-      data.push_back (nodes);     
-      labels.push_back (label); 
-      fs.close ();
-    }
-    // Update the label when changing category
-    ++label;
-  }
-  
   // Make sure we have data
   if (data.empty ())
   {
-    CORE_ERROR ("No training data learned\n");
+    CORE_ERROR ("No training data\n");
     return (-1);  
   }
   

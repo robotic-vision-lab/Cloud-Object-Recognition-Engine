@@ -8,13 +8,13 @@
 void
 estimatePrincipalCurvatures (const pcl::search::KdTree<pcl::PointXYZRGB>::Ptr &tree,
                              const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud,
-                             const pcl::PointCloud<pcl::Normal>::Ptr &normals_cloud,
+                             const pcl::PointCloud<pcl::Normal>::Ptr &cloud_normals,
                              pcl::PointCloud<pcl::PrincipalCurvatures>::Ptr 
                              &principal_curvatures, float radius)
 {
   pcl::PrincipalCurvaturesEstimation<pcl::PointXYZRGB, pcl::Normal, pcl::PrincipalCurvatures> pce;
   pce.setInputCloud (cloud);
-  pce.setInputNormals (normals_cloud);
+  pce.setInputNormals (cloud_normals);
   pce.setSearchMethod (tree);
   pce.setRadiusSearch (radius);
   pce.compute (*principal_curvatures);

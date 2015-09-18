@@ -10,11 +10,11 @@ CORE_ADD_DOC(${SUBSYS_NAME})
 
 if(build)
   set(srcs
-      src/svm/svm_covariance_predict_class.cpp
+      src/svm/svm_predict_class.cpp
       ${CMAKE_SOURCE_DIR}/3rdparty/libsvm/svm.cpp) 
 
   set(incs 
-      include/core/${SUBSYS_NAME}/svm/svm_covariance_predict_class.h)
+      include/core/${SUBSYS_NAME}/svm/svm_predict_class.h)
 
   set(LIB_NAME core_${SUBSYS_NAME})
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include

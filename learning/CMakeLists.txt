@@ -10,11 +10,11 @@ CORE_ADD_DOC(${SUBSYS_NAME})
 
 if(build)
   set(srcs 
-      src/svm/svm_train_covariances.cpp
+      src/svm/svm_train.cpp
       ${CMAKE_SOURCE_DIR}/3rdparty/libsvm/svm.cpp)
 
   set(incs 
-      include/core/${SUBSYS_NAME}/svm/svm_train_covariances.h)
+      include/core/${SUBSYS_NAME}/svm/svm_train.h)
 
   set(LIB_NAME core_${SUBSYS_NAME})
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/3rdparty/libsvm)
