@@ -3,8 +3,8 @@
  *
  */
 
-#ifndef LEARN_SVM_COVARIANCE_MODEL_H
-#define LEARN_SVM_COVARIANCE_MODEL_H
+#ifndef SVM_TRAIN_H
+#define SVM_TRAIN_H
 
 #include <stdlib.h>
 #include <string.h>
@@ -12,9 +12,10 @@
 #include <fstream>
 #include <vector>
 #include <cerrno>
+#include <svm.h>
+#include <core/utils/utils.h>
 #include <core/console/print.h>
-#include "svm.h"
 
-int learnModel (double, const std::string);
+int svmTrain (double gamma, std::vector<std::vector<svm_node> > data, std::vector<int> labels);
 
-#endif  // LEARN_SVM_COVARIANCE_MODEL_H
+#endif  // SVM_TRAIN_H

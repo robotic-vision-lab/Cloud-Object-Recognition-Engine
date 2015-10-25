@@ -179,6 +179,9 @@ find_package(PCL REQUIRED)
 include_directories(${PCL_INCLUDE_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
+# OpenCV (required)
+include(${CORE_SOURCE_DIR}/cmake/core_find_opencv.cmake)
+
 # Find Doxygen and html help compiler if any
 find_package(Doxygen)
 if(DOXYGEN_FOUND)

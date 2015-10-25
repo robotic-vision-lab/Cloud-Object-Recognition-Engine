@@ -8,18 +8,18 @@
 void
 computeNormals (const pcl::search::KdTree<pcl::PointXYZRGB>::Ptr &tree,
                 const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud,
-                pcl::PointCloud<pcl::Normal>::Ptr &normals_cloud, float radius)
+                pcl::PointCloud<pcl::Normal>::Ptr &cloud_normals, float radius)
 {
   pcl::NormalEstimationOMP<pcl::PointXYZRGB, pcl::Normal> ne;
   ne.setSearchMethod (tree);
   ne.setInputCloud (cloud);
   ne.setRadiusSearch (radius);
-  ne.compute (*normals_cloud);
+  ne.compute (*cloud_normals);
 }
 
 void
 computeIntegralImageNormals (const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud,
-                             pcl::PointCloud<pcl::Normal>::Ptr &normals_cloud, 
+                             pcl::PointCloud<pcl::Normal>::Ptr &cloud_normals, 
                              float change_factor, float smoothing_size)
 {
   pcl::IntegralImageNormalEstimation<pcl::PointXYZRGB, pcl::Normal> ne;
@@ -29,5 +29,5 @@ computeIntegralImageNormals (const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud
   ne.setMaxDepthChangeFactor(change_factor);
   ne.setNormalSmoothingSize(smoothing_size);
   ne.setInputCloud (cloud);
-  ne.compute (*normals_cloud);
+  ne.compute (*cloud_normals);
 }

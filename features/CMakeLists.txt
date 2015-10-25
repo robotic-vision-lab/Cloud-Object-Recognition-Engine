@@ -10,15 +10,25 @@ CORE_ADD_DOC(${SUBSYS_NAME})
 
 if(build)
   set(srcs
-      src/normals.cpp)
+      src/normals.cpp
+      src/curvatures.cpp
+      src/sobel.cpp)
 
   set(incs
-    include/core/${SUBSYS_NAME}/normals.h)
+      include/core/${SUBSYS_NAME}/normals.h
+      include/core/${SUBSYS_NAME}/curvatures.h
+      include/core/${SUBSYS_NAME}/sobel.h)
 
   set(LIB_NAME core_${SUBSYS_NAME})
-  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${PCL_INCLUDE_DIRS})
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include 
+                      ${PCL_INCLUDE_DIRS}
+                      ${OpenCV_INCLUDE_DIRS})
+
   CORE_ADD_LIBRARY(${LIB_NAME} ${SUBSYS_NAME} ${srcs} ${incs})
-  target_link_libraries(${LIB_NAME} core_common ${PCL_LIBRARIES}) 
+  target_link_libraries(${LIB_NAME} 
+                        core_common 
+                        ${PCL_LIBRARIES}
+                        ${OpenCV_LIBS}) 
   CORE_MAKE_PKGCONFIG(${LIB_NAME} ${SUBSYS_NAME} "${SUBSYS_DESC}" "${SUBSYS_DEPS}" "" "" "" "")
 
   # Install include files

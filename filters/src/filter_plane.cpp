@@ -3,7 +3,7 @@
  *
  */
 
-#include <core/filters/filter_model.h>
+#include <core/filters/filter_plane.h>
 
 int
 filterPlaneModel (pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud, float distance)
@@ -26,14 +26,14 @@ filterPlaneModel (pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud, float distance)
 
   if (inliers->indices.empty ())
     return (-1);
-
-  #pragma omp parallel for
-  for (size_t i = 0; i < inliers->indices.size (); ++i)
-  {
-    cloud->points[inliers->indices[i]].x = std::numeric_limits<double>::quiet_NaN ();
-    cloud->points[inliers->indices[i]].y = std::numeric_limits<double>::quiet_NaN ();
-    cloud->points[inliers->indices[i]].z = std::numeric_limits<double>::quiet_NaN ();
-  }
+    
+  // Remove the points that fit a plane from the cloud
+  pcl::ExtractIndices<pcl::PointXYZRGB> eifilter;
+  eifilter.setInputCloud (cloud);
+  eifilter.setIndices (inliers);
+  eifilter.setNegative (true);
+  eifilter.setKeepOrganized (true);
+  eifilter.filter (*cloud);
 
   return (0);
 }

@@ -3,7 +3,7 @@
 #include <pcl/compression/octree_pointcloud_compression.h>
 #include <core_msgs/PointCloud.h>
 #include <core/filters/filter_range.h>
-#include <core/filters/filter_model.h>
+#include <core/filters/filter_plane.h>
 
 #ifndef SERVER_POINTCLOUD_PROCESSOR_H
 #define SERVER_POINTCLOUD_PROCESSOR_H

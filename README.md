@@ -104,7 +104,7 @@ First, create a file named 'pcd\_categories' that contains a list of absolute
 paths to PCD files, one category per line. The covariance files are written out 
 for each category under the directory 'covariance\_dir':
 
-    $ covariance pcd_categories covariance_dir  
+    $ compute_covariance pcd_categories covariance_dir  
 
 #### Learning an SVM model based on covariance descriptors
 
@@ -112,14 +112,14 @@ The learning parameter gamma is given as the first argument. The model is
 constructed using the file 'cov\_categories' which contains the absolute paths,
 one category per line, to the covariance files created in the previous step:
 
-    $ learn_svm_covariance_model 0.005 cov_categories  
+    $ svm_learn_model 0.005 cov_categories  
 
 #### SVM classification based on covariance descriptors
 
-Now we can predict the classification label based on a test input PCD file and 
-the trained SVM model:
+Now we can predict the classification labels of objects in a point cloud given 
+the trained SVM model and a test input PCD file:
 
-    $ predict_svm_covariance_class pc_1.pcd model.txt  
+    $ svm_predict_class model.txt pc_1.pcd 
 
 ## References
 
