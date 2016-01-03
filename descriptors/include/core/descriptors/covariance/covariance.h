@@ -20,5 +20,6 @@
 int computeCovariance (const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &,
                        std::vector<pcl::PointIndices>::const_iterator it,
                        Eigen::MatrixXd &);
+void writeCovariance (std::ofstream &fs, const Eigen::MatrixXd &covariance_matrix);
 
 #endif  // COVARIANCE_H

@@ -115,18 +115,7 @@ main (int argc, char** argv)
           CORE_ERROR ("Could not open file '%s'! Error : %s\n", covariance_path.c_str (), strerror (errno)); 
           continue;
         }
-        // Output upper triangular values with the non-diagonal entries multiplied 
-        // by sqrt (2.0).  
-        for (int j = 0; j < covariance_matrix.rows (); ++j)
-        {
-          for (int k = j; k < covariance_matrix.cols (); ++k)
-          {
-            if (k != j)
-	          fs << sqrt (2.0) * covariance_matrix (j, k) << " ";
-	        else
-	          fs << covariance_matrix (j, k) << " ";
-          }
-        }
+        writeCovariance(fs, covariance_matrix);
         std::cout << "done." << std::endl;
         fs.close ();
       }  

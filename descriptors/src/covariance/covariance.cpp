@@ -95,3 +95,19 @@ computeCovariance (const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud,
 
   return (0);
 }
+
+void
+writeCovariance (std::ofstream &fs, const Eigen::MatrixXd &covariance_matrix)
+{
+  // Output upper triangular values with the non-diagonal entries multiplied by sqrt (2.0)
+  for (int i = 0; i < covariance_matrix.rows (); ++i)
+  {
+    for (int j = i; j < covariance_matrix.cols (); ++j)
+    {
+      if (j != i)
+        fs << sqrt (2.0) * covariance_matrix (i, j) << " ";
+      else
+        fs << covariance_matrix (i, j) << " ";                                                                                           
+    }
+  }
+} 
