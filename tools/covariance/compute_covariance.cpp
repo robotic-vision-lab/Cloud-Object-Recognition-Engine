@@ -8,6 +8,7 @@
 #include <core/utils/utils.h>
 #include <core/filters/filter_range.h>
 #include <core/filters/filter_plane.h>
+#include <core/configuration/configuration.h>
 #include <core/segmentation/extract_clusters.h>
 #include <core/descriptors/covariance/covariance.h>
 #include <core/classification/svm/svm_predict_class.h>
@@ -15,21 +16,26 @@
 void
 printHelp (int, char** argv)
 {
-  CORE_INFO ("Syntax is: %s categories_in (directory list of pcd files) covariances_out (directory path to output covariance files)\n", argv[0]);
+  CORE_INFO ("Syntax is: %s core.cfg (configuration file) categories_in (directory list of pcd files) covariances_out (directory path to output covariance files)\n", argv[0]);
 }
 
 int 
 main (int argc, char** argv)
 {
-  if (argc < 3)
+  if (argc < 4)
   {
     printHelp (argc, argv);
     return (-1);
   }
   
-  std::string category_file = argv[1];
-  std::string covariance_dir = argv[2];
+  std::string configuration_file = argv[1];
+  std::string category_file = argv[2];
+  std::string covariance_dir = argv[3];
   std::vector<std::string> categories;
+  COREConfiguration core_cfg;
+
+  if (getConfiguration (configuration_file, core_cfg) < 0)
+    return (-1);
 
   if (getCategories (category_file, categories) < 0)
     return (-1);
@@ -63,23 +69,34 @@ main (int argc, char** argv)
 
       std::cout << "Processing: " << point_cloud.c_str () << std::endl;
 
-      std::cout << "Filtering range outliers ... ";
-      filterRangeDepth (cloud, cloud_filtered, 0.0, 1.5);
-      std::cout << "done." << std::endl;
- 
-      std::cout << "Filtering plane model ... ";
-      if (filterPlaneModel (cloud_filtered, 0.015) < 0)
+      if (core_cfg.filter.enable_range)
       {
-        CORE_ERROR ("Could not estimate a planar model for the given data\n"); 
-        continue;
+        std::cout << "Filtering range outliers ... ";
+        filterRangeDepth (cloud, 
+                          cloud_filtered, 
+                          core_cfg.filter.range.min_distance, 
+                          core_cfg.filter.range.max_distance);
+        std::cout << "done." << std::endl;
       }
-      std::cout << "done." << std::endl;
-      
+
+      if (core_cfg.filter.enable_plane)
+      {
+        std::cout << "Filtering plane model ... ";
+        if (filterPlaneModel (cloud_filtered, core_cfg.filter.plane.distance_threshold) < 0)
+        {
+          CORE_ERROR ("Could not estimate a planar model for the given data\n"); 
+          continue;
+        }
+        std::cout << "done." << std::endl;
+      }
+
       pcl::removeNaNFromPointCloud (*cloud_filtered, *cloud_filtered, indices); 
       std::cout << "Segmenting cloud ... ";
       if (euclideanClusterExtraction (tree, 
                                       cloud_filtered, cluster_indices, 
-                                      0.05, 500, 75000) < 0) 
+                                      core_cfg.segmentation.euclidean_cluster.tolerance, 
+                                      core_cfg.segmentation.euclidean_cluster.min_points, 
+                                      core_cfg.segmentation.euclidean_cluster.max_points) < 0) 
       {
         CORE_ERROR ("No cluster found\n");
         continue;
@@ -115,7 +132,7 @@ main (int argc, char** argv)
           CORE_ERROR ("Could not open file '%s'! Error : %s\n", covariance_path.c_str (), strerror (errno)); 
           continue;
         }
-        writeCovariance(fs, covariance_matrix);
+        writeCovariance (fs, covariance_matrix);
         std::cout << "done." << std::endl;
         fs.close ();
       }  

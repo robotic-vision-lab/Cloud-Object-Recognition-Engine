@@ -1,6 +1,6 @@
 set(SUBSYS_NAME tools)
 set(SUBSYS_DESC "Useful CORE-based command line tools")
-set(SUBSYS_DEPS common utils filters segmentation features descriptors learning classification)
+set(SUBSYS_DEPS common configuration utils filters segmentation features descriptors learning classification)
 
 set(build TRUE)
 CORE_SUBSYS_OPTION(build ${SUBSYS_NAME} ${SUBSYS_DESC} ON)
@@ -12,7 +12,7 @@ if(build)
   include_directories(${CMAKE_SOURCE_DIR}/3rdparty/libsvm)
 
   CORE_ADD_EXECUTABLE(compute_covariance ${SUBSYS_NAME} covariance/compute_covariance.cpp)
-  target_link_libraries(compute_covariance core_descriptors)
+  target_link_libraries(compute_covariance core_configuration core_descriptors)
 
   CORE_ADD_EXECUTABLE(svm_learn_model ${SUBSYS_NAME} covariance/svm_learn_model.cpp)
   target_link_libraries(svm_learn_model core_learning)
