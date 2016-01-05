@@ -15,7 +15,7 @@
 #include <core/console/print.h>
 
 void replaceExt (std::string &s, const std::string &ext);
-int getCategories (const std::string file_name, std::vector<std::string> &categories);
-int getData (const std::string dir_name, std::vector<std::string> &data);
+int getCategories (const std::string &file_name, std::vector<std::string> &categories);
+int getData (const std::string &dir_name, std::vector<std::string> &data);
 
 #endif  // UTILS_H

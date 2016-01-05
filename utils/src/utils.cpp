@@ -17,7 +17,7 @@ replaceExt (std::string &s, const std::string &ext)
 }
 
 int 
-getCategories (const std::string file_name, std::vector<std::string> &categories)
+getCategories (const std::string &file_name, std::vector<std::string> &categories)
 {
   std::string line;
   std::ifstream fs;
@@ -44,7 +44,7 @@ getCategories (const std::string file_name, std::vector<std::string> &categories
 }
 
 int 
-getData (const std::string dir_name, std::vector<std::string> &data)
+getData (const std::string &dir_name, std::vector<std::string> &data)
 {
   DIR* dp;
   struct dirent* dirp;
@@ -62,7 +62,7 @@ getData (const std::string dir_name, std::vector<std::string> &data)
     data.push_back (dir_name + "/" + dirp->d_name);
   }
 
-  closedir(dp);
+  closedir (dp);
 
   return (0);
 }

@@ -18,9 +18,9 @@ if(build)
   set(LIB_NAME core_${SUBSYS_NAME})
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
   CORE_ADD_LIBRARY(${LIB_NAME} ${SUBSYS_NAME} ${srcs} ${incs})
-  target_link_libraries(${LIB_NAME} core_common)                                                    
+  target_link_libraries(${LIB_NAME} core_common)
   CORE_MAKE_PKGCONFIG(${LIB_NAME} ${SUBSYS_NAME} "${SUBSYS_DESC}" "" "" "" "" "")
-
+  
   # Install include files
   CORE_ADD_INCLUDES(${SUBSYS_NAME} "" ${incs})
 
