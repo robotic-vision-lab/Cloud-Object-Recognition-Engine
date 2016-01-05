@@ -100,11 +100,14 @@ covariance descriptors and a support vector machine (SVM).
 
 #### Computing the covariance descriptor for a set of PCD files
 
-First, create a file named 'pcd\_categories' that contains a list of absolute 
-paths to PCD files, one category per line. The covariance files are written out 
-for each category under the directory 'covariance\_dir':
+First, copy over the CORE configuration file, 'core.cfg', from the 
+'configuration' subdirectory. To adjust filter, segmentation, descriptor, and 
+learning parameters, edit this file as necessary. Then, create a file named 
+'pcd\_categories' that contains a list of absolute paths to PCD files, one 
+category per line. The covariance files are written out for each category under 
+the directory 'covariance\_dir':
 
-    $ compute_covariance pcd_categories covariance_dir  
+    $ compute_covariance core.cfg pcd_categories covariance_dir  
 
 #### Learning an SVM model based on covariance descriptors
 
