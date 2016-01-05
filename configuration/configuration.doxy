@@ -1,0 +1,12 @@
+/**
+  \addtogroup configuration Module configuration
+
+  \section secConfigurationPresentation Overview
+
+  The <b>core_configuration</b> library contains data structures and functions 
+  for configuring CORE.
+
+  \section secConfigurationRequirements Requirements
+  - \ref common "common"
+
+*/
