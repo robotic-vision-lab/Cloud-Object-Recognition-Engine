@@ -7,20 +7,20 @@ ClientPointCloudProcessor::ClientPointCloudProcessor():
   input_("/camera/depth_registered/points"),
   output_("/client_pointcloud_processor/output"),
   cull_(false),
-  range_filter_(true),
-  model_filter_(true),
-  min_range_(0),  
-  max_range_(1.5),    
+  enable_range_(true),
+  enable_plane_(true),
+  min_distance_(0),  
+  max_distance_(1.5),    
   distance_threshold_(0.015),  
   entropy_threshold_(0.5)
 {
   ph_.param("input", input_, input_);
   ph_.param("output", output_, output_);
   ph_.param("cull", cull_, cull_);
-  ph_.param("range_filter", range_filter_, range_filter_);
-  ph_.param("model_filter", model_filter_, model_filter_);
-  ph_.param("min_range", min_range_, min_range_);
-  ph_.param("max_range", max_range_, max_range_);
+  ph_.param("enable_range_", enable_range_, enable_range_);
+  ph_.param("enable_plane_", enable_plane_, enable_plane_);
+  ph_.param("min_distance", min_distance_, min_distance_);
+  ph_.param("max_distance", max_distance_, max_distance_);
   ph_.param("distance_threshold", distance_threshold_, distance_threshold_);
   ph_.param("entropy_threshold", entropy_threshold_, entropy_threshold_);
   
@@ -95,13 +95,13 @@ ClientPointCloudProcessor::cloudCallback(const sensor_msgs::PointCloud2ConstPtr&
   pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_filtered(new pcl::PointCloud<pcl::PointXYZRGB>);
   pcl::fromROSMsg (*input, *cloud);
 
-  if (range_filter_) 
+  if (enable_range_) 
   {
-    filterRangeDepth(cloud, cloud_filtered, min_range_, max_range_);
+    filterRangeDepth(cloud, cloud_filtered, min_distance_, max_distance_);
     is_filtered = true;
   }
 
-  if (model_filter_)
+  if (enable_plane_)
   {
     if (filterPlaneModel(cloud_filtered, distance_threshold_) < 0)
       std::cerr << "Could not estimate a planar model for the given data" << std::endl;

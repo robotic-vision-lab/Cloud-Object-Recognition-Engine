@@ -5,17 +5,17 @@ struct timeval cloudcallback_start, cloudcallback_end;
 ServerPointCloudProcessor::ServerPointCloudProcessor():
   ph_("~"),
   input_("/core_server_pointcloud/output"),
-  range_filter_(true),
-  model_filter_(true),
-  min_range_(0),  
-  max_range_(1.5),    
+  enable_range_(true),
+  enable_plane_(true),
+  min_distance_(0),  
+  max_distance_(1.5),    
   distance_threshold_(0.015)
 {
   ph_.param("input", input_, input_);
-  ph_.param("range_filter", range_filter_, range_filter_);
-  ph_.param("model_filter", model_filter_, model_filter_);
-  ph_.param("min_range", min_range_, min_range_);
-  ph_.param("max_range", max_range_, max_range_);
+  ph_.param("enable_range", enable_range_, enable_range_);
+  ph_.param("enable_plane", enable_plane_, enable_plane_);
+  ph_.param("min_distance", min_distance_, min_distance_);
+  ph_.param("max_distance", max_distance_, max_distance_);
   ph_.param("distance_threshold", distance_threshold_, distance_threshold_);
   
   sub_ = nh_.subscribe(input_, 1, &ServerPointCloudProcessor::cloudCallback, this);
@@ -51,13 +51,13 @@ ServerPointCloudProcessor::cloudCallback(const core_msgs::PointCloudConstPtr& in
   std::stringstream compressed_data(input->data);
   decompressPointCloud(compressed_data, cloud);
 
-  if (range_filter_) 
+  if (enable_range_) 
   {
-    filterRangeDepth(cloud, cloud_filtered, min_range_, max_range_);
+    filterRangeDepth(cloud, cloud_filtered, min_distance_, max_distance_);
     is_filtered = true;
   }
 
-  if (model_filter_)
+  if (enable_plane_)
   {
     if (filterPlaneModel(cloud_filtered, distance_threshold_) < 0)
       std::cerr << "Could not estimate a planar model for the given data" << std::endl;

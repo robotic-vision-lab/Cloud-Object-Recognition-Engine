@@ -18,11 +18,11 @@ class ServerPointCloudProcessor
   private:
     void cloudCallback(const core_msgs::PointCloudConstPtr& input);
 
-    std::string input_;          
-    bool range_filter_;          // Enable/disable point cloud range filtering 
-    bool model_filter_;          // Enable/disable point cloud planar model filtering 
-    double min_range_;           // Range filter minimum distance
-    double max_range_;           // Range filter maximum distance
+    std::string input_;
+    bool enable_range_;          // Filter range outliers
+    bool enable_plane_;          // Filter a planar model
+    double min_distance_;        // Minimum outlier range
+    double max_distance_;        // Maximum outlier range
     double distance_threshold_;  // Planar model inlier distance
 
     ros::Subscriber sub_;

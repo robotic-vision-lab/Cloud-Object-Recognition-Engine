@@ -21,11 +21,11 @@ class ClientPointCloudProcessor
 
     std::string input_;          // RGB-D sensor subscription topic
     std::string output_;         // Point cloud processor publication topic
-    bool cull_;                  // Enable/disable point cloud culling
-    bool range_filter_;          // Enable/disable point cloud range filtering 
-    bool model_filter_;          // Enable/disable point cloud planar model filtering 
-    double min_range_;           // Range filter minimum distance
-    double max_range_;           // Range filter maximum distance
+    bool cull_;                  // Perform cloud culling
+    bool enable_range_;          // Filter range outliers
+    bool enable_plane_;          // Filter a planar model
+    double min_distance_;        // Minimum outlier range
+    double max_distance_;        // Maximum outlier range
     double distance_threshold_;  // Planar model inlier distance
     double entropy_threshold_;   // Point cloud culling entropy threshold 
 
