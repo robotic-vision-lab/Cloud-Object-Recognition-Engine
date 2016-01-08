@@ -111,18 +111,19 @@ the directory 'covariance\_dir':
 
 #### Learning an SVM model based on covariance descriptors
 
-The learning parameter gamma is given as the first argument. The model is 
-constructed using the file 'cov\_categories' which contains the absolute paths,
-one category per line, to the covariance files created in the previous step:
+The learning parameter, gamma, is set in the configuration file 'core.cfg'. The
+model is constructed using the file 'cov\_categories' which contains the
+absolute paths, one category per line, to the covariance files created in the
+previous step:
 
-    $ svm_learn_model 0.005 cov_categories  
+    $ svm_learn_model core.cfg cov_categories  
 
 #### SVM classification based on covariance descriptors
 
 Now we can predict the classification labels of objects in a point cloud given 
-the trained SVM model and a test input PCD file:
+the configuration file, the trained SVM model, and a test input PCD file:
 
-    $ svm_predict_class model.txt pc_1.pcd 
+    $ svm_predict_class core.cfg model.txt pc_1.pcd 
 
 ## References
 
