@@ -28,18 +28,22 @@ getConfiguration (const std::string &file_name, COREConfiguration &core_cfg)
   // Filter parameters 
   core_cfg.filter.enable_range             = cfg.lookup ("core.filter.enable_range");
   core_cfg.filter.enable_plane             = cfg.lookup ("core.filter.enable_plane");
+
   core_cfg.filter.range.min_distance       = cfg.lookup ("core.filter.range.min_distance");
   core_cfg.filter.range.max_distance       = cfg.lookup ("core.filter.range.max_distance");
+
   core_cfg.filter.plane.distance_threshold = cfg.lookup ("core.filter.plane.distance_threshold");
 
   // Segmentation parameters
   core_cfg.segmentation.enable_euclidean_cluster     = cfg.lookup ("core.segmentation.enable_euclidean_cluster");
+
   core_cfg.segmentation.euclidean_cluster.tolerance  = cfg.lookup ("core.segmentation.euclidean_cluster.tolerance");
   core_cfg.segmentation.euclidean_cluster.min_points = cfg.lookup ("core.segmentation.euclidean_cluster.min_points");
   core_cfg.segmentation.euclidean_cluster.max_points = cfg.lookup ("core.segmentation.euclidean_cluster.max_points");
 
   // Feature descriptors
   core_cfg.descriptor.enable_covariance               = cfg.lookup ("core.descriptor.enable_covariance");
+
   core_cfg.descriptor.covariance.position             = cfg.lookup ("core.descriptor.covariance.position");
   core_cfg.descriptor.covariance.color                = cfg.lookup ("core.descriptor.covariance.color");
   core_cfg.descriptor.covariance.normals              = cfg.lookup ("core.descriptor.covariance.normals");
@@ -56,6 +60,15 @@ getConfiguration (const std::string &file_name, COREConfiguration &core_cfg)
   core_cfg.descriptor.covariance.gaussian_curvature   = cfg.lookup ("core.descriptor.covariance.gaussian_curvature");
   core_cfg.descriptor.covariance.normals_radius       = cfg.lookup ("core.descriptor.covariance.normals_radius");
   core_cfg.descriptor.covariance.curvatures_radius    = cfg.lookup ("core.descriptor.covariance.curvatures_radius");
+
+  // Classification parameters
+  core_cfg.classification.enable_svm = cfg.lookup ("core.classification.enable_svm");
+  core_cfg.classification.enable_dl  = cfg.lookup ("core.classification.enable_dl");
+
+  core_cfg.classification.svm.gamma  = cfg.lookup ("core.classification.svm.gamma");
+  core_cfg.classification.svm.model  = cfg.lookup ("core.classification.svm.model").c_str ();
+
+  core_cfg.classification.dl.atoms   = cfg.lookup ("core.classification.dl.atoms");
 
   return (0);
 }

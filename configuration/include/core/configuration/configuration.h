@@ -67,11 +67,31 @@ typedef struct {
   Covariance covariance;
 } Descriptor;
 
+// SVM 
+typedef struct {
+  float gamma;
+  std::string model;     
+} Svm;
+
+// Dictionary learning 
+typedef struct {
+  int atoms;
+} Dl;
+
+// Classification parameters
+typedef struct {
+  bool enable_svm;
+  bool enable_dl;
+  Svm svm;
+  Dl dl;
+} Classification;
+
 // CORE configuration data 
 typedef struct {
   Filter filter;
   Segmentation segmentation;
   Descriptor descriptor;
+  Classification classification;
 } COREConfiguration;
 
 int getConfiguration (const std::string &file_name, COREConfiguration &core_cfg); 
