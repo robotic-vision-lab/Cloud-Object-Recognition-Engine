@@ -15,9 +15,9 @@ if(build)
   target_link_libraries(compute_covariance core_configuration core_descriptors)
 
   CORE_ADD_EXECUTABLE(svm_learn_model ${SUBSYS_NAME} covariance/svm_learn_model.cpp)
-  target_link_libraries(svm_learn_model core_learning)
+  target_link_libraries(svm_learn_model core_configuration core_learning)
 
   CORE_ADD_EXECUTABLE(svm_predict_class ${SUBSYS_NAME} covariance/svm_predict_class.cpp)
-  target_link_libraries(svm_predict_class core_classification)
+  target_link_libraries(svm_predict_class core_configuration core_classification)
 
 endif(build)

@@ -8,6 +8,7 @@
 #include <boost/thread/thread.hpp>
 #include <core/filters/filter_range.h>
 #include <core/filters/filter_plane.h>
+#include <core/configuration/configuration.h>
 #include <core/segmentation/extract_clusters.h>
 #include <core/descriptors/covariance/covariance.h>
 #include <core/classification/svm/svm_predict_class.h>
@@ -82,21 +83,23 @@ displayPointClouds(const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud_filtered,
 void
 printHelp (int, char** argv)
 {
-  CORE_INFO ("Syntax is: %s model_file pcd_file\n", argv[0]);
+  CORE_INFO ("Syntax is: %s ore.cfg (configuration file) model_file (SVM model) pcd_file (point cloud)\n", argv[0]);
 }
 
 int 
 main (int argc, char** argv)
 {
-  if (argc < 3)
+  if (argc < 4)
   {
     printHelp (argc, argv);
     return (-1);
   } 
 
-  std::string model_file = argv[1];
-  std::string pcd_file = argv[2];
-  
+  std::string configuration_file = argv[1];
+  std::string model_file = argv[2];
+  std::string pcd_file = argv[3];
+
+  COREConfiguration core_cfg;
   std::vector<int> indices;
   Eigen::MatrixXd covariance_matrix;
   pcl::search::KdTree<pcl::PointXYZRGB>::Ptr 
@@ -109,6 +112,9 @@ main (int argc, char** argv)
     colored_class_cloud (new pcl::PointCloud<pcl::PointXYZRGB>);
   std::vector<pcl::PointIndices> cluster_indices;
   
+  if (getConfiguration (configuration_file, core_cfg) < 0)
+    return (-1);
+
   struct svm_model* model = svm_load_model (model_file.c_str ());
   if (model == NULL)
   {
@@ -121,23 +127,34 @@ main (int argc, char** argv)
     CORE_ERROR ("Could not open file '%s'! Error : %s\n", pcd_file.c_str (), strerror (errno)); 
   }
   
-  std::cout << "Filtering range outliers ... ";
-  filterRangeDepth (cloud, cloud_filtered, 0.0, 1.5);
-  std::cout << "done." << std::endl;
-
-  std::cout << "Filtering plane model ... ";
-  if (filterPlaneModel (cloud_filtered, 0.015) < 0)
+  if (core_cfg.filter.enable_range)
   {
-    CORE_ERROR ("Could not estimate a planar model for the given data\n"); 
-    return (-1);
+    std::cout << "Filtering range outliers ... ";
+    filterRangeDepth (cloud, 
+                      cloud_filtered, 
+                      core_cfg.filter.range.min_distance, 
+                      core_cfg.filter.range.max_distance);
+    std::cout << "done." << std::endl;
   }
-  std::cout << "done." << std::endl;
-  
+
+  if (core_cfg.filter.enable_plane)
+  {
+    std::cout << "Filtering plane model ... ";
+    if (filterPlaneModel (cloud_filtered, core_cfg.filter.plane.distance_threshold) < 0)
+    {
+      CORE_ERROR ("Could not estimate a planar model for the given data\n"); 
+      return (-1);
+    }
+    std::cout << "done." << std::endl;
+  }
+
   pcl::removeNaNFromPointCloud (*cloud_filtered, *cloud_filtered, indices);
   std::cout << "Segmenting cloud ... ";
-  if (euclideanClusterExtraction (tree,
-                                  cloud_filtered, cluster_indices,
-                                  0.05, 500, 75000) < 0)
+  if (euclideanClusterExtraction (tree, 
+                                  cloud_filtered, cluster_indices, 
+                                  core_cfg.segmentation.euclidean_cluster.tolerance, 
+                                  core_cfg.segmentation.euclidean_cluster.min_points, 
+                                  core_cfg.segmentation.euclidean_cluster.max_points) < 0) 
   {
     CORE_ERROR ("No cluster found\n");
     return (-1);
