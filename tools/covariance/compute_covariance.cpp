@@ -106,7 +106,7 @@ main (int argc, char** argv)
       for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
       {
         std::cout << "Computing covariance ... ";
-        if (computeCovariance (cloud_filtered, it, covariance_matrix) < 0)
+        if (computeCovariance (core_cfg.descriptor.covariance, cloud_filtered, it, covariance_matrix) < 0)
           continue;
         std::cout << "done." << std::endl;
       

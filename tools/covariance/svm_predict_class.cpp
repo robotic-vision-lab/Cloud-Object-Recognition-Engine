@@ -168,7 +168,7 @@ main (int argc, char** argv)
   int cluster_count = 1;
   for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
   {
-    if (computeCovariance (cloud_filtered, it, covariance_matrix) < 0)                                                
+    if (computeCovariance (core_cfg.descriptor.covariance, cloud_filtered, it, covariance_matrix) < 0)
       continue;
     
     double label = svmCovariancePredictClass (model, covariance_matrix);

@@ -15,11 +15,13 @@
 #include <core/features/normals.h>
 #include <core/features/sobel.h>
 #include <core/features/curvatures.h>
+#include <core/configuration/configuration.h>
 #include <unsupported/Eigen/MatrixFunctions>
 
-int computeCovariance (const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &,
-                       std::vector<pcl::PointIndices>::const_iterator it,
+int computeCovariance (const Covariance &, 
+                       const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &,
+                       std::vector<pcl::PointIndices>::const_iterator,
                        Eigen::MatrixXd &);
-void writeCovariance (std::ofstream &fs, const Eigen::MatrixXd &covariance_matrix);
+void writeCovariance (std::ofstream &, const Eigen::MatrixXd &);
 
 #endif  // COVARIANCE_H

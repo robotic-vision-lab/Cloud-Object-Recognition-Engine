@@ -5,6 +5,21 @@
 
 #include <core/descriptors/covariance/covariance.h>
 
+int 
+getFeatureCount (const Covariance &covariance)
+{
+  int count = 0;
+
+  if (covariance.position)
+    count = count + 3;
+  if (covariance.color)
+    count = count + 3;
+  if (covariance.normals)
+    count = count + 3;
+
+  return count;
+}
+
 void
 computeMean (Eigen::MatrixXd &F, const std::vector<double> &feature, 
              const int idx, const double max_pos)
@@ -15,9 +30,10 @@ computeMean (Eigen::MatrixXd &F, const std::vector<double> &feature,
 
   for (it = feature.begin (); it != feature.end (); ++it)
     avg += *it; 
+
+  // Normalize 
   avg /= feature.size (); 
   it = feature.begin ();
-  // Normalize 
   #pragma omp parallel for
   for (i = 0; i < feature.size (); ++i) 
   {
@@ -29,7 +45,8 @@ computeMean (Eigen::MatrixXd &F, const std::vector<double> &feature,
 }
 
 int 
-computeCovariance (const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud,
+computeCovariance (const Covariance &covariance,
+                   const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud,
                    const std::vector<pcl::PointIndices>::const_iterator it,
                    Eigen::MatrixXd &covariance_matrix)
 {
@@ -41,7 +58,8 @@ computeCovariance (const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud,
                       fr, fg, fb,     // Color
                       fnx, fny, fnz;  // Normals
                       
-  computeNormals (tree, cloud, cloud_normals, 0.03);
+  if (covariance.normals)
+    computeNormals (tree, cloud, cloud_normals, covariance.normals_radius);
 
   // Fill the feature vectors
   double max_pos = 0;
@@ -49,44 +67,67 @@ computeCovariance (const pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud,
   for (pit = it->indices.begin (); pit != it->indices.end (); ++pit)
   {
     // Position
-    fx.push_back (cloud->points[*pit].x);
-    fy.push_back (cloud->points[*pit].y);
-    fz.push_back (cloud->points[*pit].z);
-    if (abs (cloud->points[*pit].x) > max_pos)
-      max_pos = abs (cloud->points[*pit].x);
-    if (abs (cloud->points[*pit].y) > max_pos)
-      max_pos = abs (cloud->points[*pit].y);
-    if (abs (cloud->points[*pit].z) > max_pos)
-      max_pos = abs (cloud->points[*pit].z);
+    if (covariance.position)
+    {
+      fx.push_back (cloud->points[*pit].x);
+      fy.push_back (cloud->points[*pit].y);
+      fz.push_back (cloud->points[*pit].z);
+      if (abs (cloud->points[*pit].x) > max_pos)
+        max_pos = abs (cloud->points[*pit].x);
+      if (abs (cloud->points[*pit].y) > max_pos)
+        max_pos = abs (cloud->points[*pit].y);
+      if (abs (cloud->points[*pit].z) > max_pos)
+        max_pos = abs (cloud->points[*pit].z);
+    }
 
     // Color
-    fr.push_back (double (cloud->points[*pit].r) / 255);
-    fg.push_back (double (cloud->points[*pit].g) / 255);
-    fb.push_back (double (cloud->points[*pit].b) / 255);
+    if (covariance.color)
+    { 
+      fr.push_back (double (cloud->points[*pit].r) / 255);
+      fg.push_back (double (cloud->points[*pit].g) / 255);
+      fb.push_back (double (cloud->points[*pit].b) / 255);
+    }
 
     // Normals
-    fnx.push_back (cloud_normals->points[*pit].normal[0]);
-    fny.push_back (cloud_normals->points[*pit].normal[1]);
-    fnz.push_back (cloud_normals->points[*pit].normal[2]);
+    if (covariance.normals)
+    {
+      fnx.push_back (cloud_normals->points[*pit].normal[0]);
+      fny.push_back (cloud_normals->points[*pit].normal[1]);
+      fnz.push_back (cloud_normals->points[*pit].normal[2]);
+    }
   }
   
+  // Make sure we have an object
   if (fx.empty ()) 
   {
     CORE_WARN ("Positional features missing\n"); 
     return (-1);
   }
 
-  Eigen::MatrixXd feature_matrix (9, fx.size ());
+  Eigen::MatrixXd feature_matrix (getFeatureCount (covariance), fx.size ());
 
-  computeMean (feature_matrix, fx, 0, max_pos);
-  computeMean (feature_matrix, fy, 1, max_pos);
-  computeMean (feature_matrix, fz, 2, max_pos);
-  computeMean (feature_matrix, fr, 3, 0);
-  computeMean (feature_matrix, fg, 4, 0);
-  computeMean (feature_matrix, fb, 5, 0);
-  computeMean (feature_matrix, fnx, 6, 0);
-  computeMean (feature_matrix, fny, 7, 0);
-  computeMean (feature_matrix, fnz, 8, 0);
+  int i = 0;
+  if (covariance.position)
+  {
+    computeMean (feature_matrix, fx, i, max_pos);
+    computeMean (feature_matrix, fy, i+1, max_pos);
+    computeMean (feature_matrix, fz, i+2, max_pos);
+    i = i + 3;
+  }
+  if (covariance.color)
+  {
+    computeMean (feature_matrix, fr, i, 0);
+    computeMean (feature_matrix, fg, i+1, 0);
+    computeMean (feature_matrix, fb, i+2, 0);
+    i = i + 3;
+  }
+  if (covariance.normals)
+  {
+    computeMean (feature_matrix, fnx, i, 0);
+    computeMean (feature_matrix, fny, i+1, 0);
+    computeMean (feature_matrix, fnz, i+2, 0);
+    i = i + 3;
+  }
 
   covariance_matrix = feature_matrix * feature_matrix.transpose () / (fx.size () - 1); 
   // Force matrix symmetry
@@ -107,7 +148,7 @@ writeCovariance (std::ofstream &fs, const Eigen::MatrixXd &covariance_matrix)
       if (j != i)
         fs << sqrt (2.0) * covariance_matrix (i, j) << " ";
       else
-        fs << covariance_matrix (i, j) << " ";                                                                                           
+        fs << covariance_matrix (i, j) << " ";
     }
-  }
-} 
+  }        
+}
