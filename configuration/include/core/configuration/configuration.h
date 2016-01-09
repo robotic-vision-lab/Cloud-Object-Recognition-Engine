@@ -55,7 +55,7 @@ typedef struct {
   bool Dx;
   bool Dy;
   bool Dmag; 
-  bool principle_curvatures; 
+  bool principal_curvatures; 
   bool gaussian_curvature;   
   float normals_radius;       
   float curvatures_radius;    

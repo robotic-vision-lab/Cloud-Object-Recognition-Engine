@@ -56,7 +56,7 @@ getConfiguration (const std::string &file_name, COREConfiguration &core_cfg)
   core_cfg.descriptor.covariance.Dx                   = cfg.lookup ("core.descriptor.covariance.Dx");
   core_cfg.descriptor.covariance.Dy                   = cfg.lookup ("core.descriptor.covariance.Dy");
   core_cfg.descriptor.covariance.Dmag                 = cfg.lookup ("core.descriptor.covariance.Dmag");
-  core_cfg.descriptor.covariance.principle_curvatures = cfg.lookup ("core.descriptor.covariance.principle_curvatures");
+  core_cfg.descriptor.covariance.principal_curvatures = cfg.lookup ("core.descriptor.covariance.principal_curvatures");
   core_cfg.descriptor.covariance.gaussian_curvature   = cfg.lookup ("core.descriptor.covariance.gaussian_curvature");
   core_cfg.descriptor.covariance.normals_radius       = cfg.lookup ("core.descriptor.covariance.normals_radius");
   core_cfg.descriptor.covariance.curvatures_radius    = cfg.lookup ("core.descriptor.covariance.curvatures_radius");
