@@ -14,5 +14,4 @@ void estimatePrincipalCurvatures (const pcl::search::KdTree<pcl::PointXYZRGB>::P
                                   pcl::PointCloud<pcl::PrincipalCurvatures>::Ptr &,
                                   float);
 
-
 #endif  // CURVATURES_H
