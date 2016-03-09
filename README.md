@@ -10,13 +10,17 @@ network connected robots.
 
 ## Building CORE on Ubuntu 14.04
 
-First, install PCL: 
+First, install the prerequisite software:
+
+    $ sudo apt-get install libconfig++-dev
+
+Next, install PCL: 
 
     $ sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl  
     $ sudo apt-get update  
     $ sudo apt-get install libpcl-all  
 
-Next, build CORE:
+Then, build CORE:
 
     $ cd core  
     $ mkdir build && cd build  
@@ -26,7 +30,7 @@ Next, build CORE:
     $ echo '/usr/local/lib' | sudo tee /etc/ld.so.conf.d/usr-local-lib.conf > /dev/null  
     $ sudo ldconfig  
 
-Install ROS Indigo [2]. Then, build the ROS module:
+Install ROS Indigo [2] and build the ROS module:
 
     $ cd core/ros  
     $ catkin_make
