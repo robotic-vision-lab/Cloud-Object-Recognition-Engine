@@ -8,19 +8,13 @@ CORE is to leverage cloud computing facilities for the purpose of storing data,
 training classifiers, and performing object recognition tasks offloaded by 
 network connected robots.
 
-## Building CORE on Ubuntu 14.04
+## Building CORE on Ubuntu 16.04
 
-First, install the prerequisite software:
+First, install ROS Kinetic [1] followed by the software dependencies:                                                                                                        
 
-    $ sudo apt-get install libconfig++-dev
+    $ bash install.sh 
 
-Next, install PCL: 
-
-    $ sudo add-apt-repository ppa:v-launchpad-jochen-sprickerhof-de/pcl  
-    $ sudo apt-get update  
-    $ sudo apt-get install libpcl-all  
-
-Then, build CORE:
+Next, build CORE:
 
     $ cd core  
     $ mkdir build && cd build  
@@ -30,7 +24,7 @@ Then, build CORE:
     $ echo '/usr/local/lib' | sudo tee /etc/ld.so.conf.d/usr-local-lib.conf > /dev/null  
     $ sudo ldconfig  
 
-Install ROS Indigo [2] and build the ROS module:
+Then, build the ROS module:
 
     $ cd core/ros  
     $ catkin_make
@@ -42,10 +36,10 @@ Install ROS Indigo [2] and build the ROS module:
 #### Server setup 
 
 We use CloudLab [4] as our remote computing facility in this example. We've
-created a profile (disk image) named 'ubuntu-14\_04-ros-indigo-full' that 
+created a profile (disk image) named 'ubuntu-16\_04-ros-kinetic-full' that 
 captures the entire cloud environment. This profile is shared within CloudLab 
 under the project 'core-robotics'. It consists of one x86 node running Ubuntu 
-14.04 with ROS Indigo installed.
+16.04 with ROS Kinetic installed.
 
 After starting an experiment with the above profile, clone and build CORE:
 
@@ -61,7 +55,7 @@ After starting an experiment with the above profile, clone and build CORE:
 Next, build the ROS module:
 
     $ cd core/ros  
-    $ source /opt/ros/indigo/setup.bash  
+    $ source /opt/ros/kinetic/setup.bash  
     $ catkin_make  
 
 Then, launch the rosbridge server node:
