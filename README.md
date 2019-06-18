@@ -10,7 +10,7 @@ network connected robots.
 
 ## Building CORE on Ubuntu 16.04
 
-First, install ROS Kinetic [1] followed by the software dependencies:                                                                                                        
+First, install ROS Kinetic [2] followed by the software dependencies:                                                                                                        
 
     $ bash install.sh 
 
@@ -43,7 +43,7 @@ under the project 'core-robotics'. It consists of one x86 node running Ubuntu
 
 After starting an experiment with the above profile, clone and build CORE:
 
-    $ git clone https://username@github.com/wjbeksi/core  
+    $ git clone https://username@github.com/utarvl/core  
     $ cd core  
     $ mkdir build && cd build  
     $ cmake ..  
