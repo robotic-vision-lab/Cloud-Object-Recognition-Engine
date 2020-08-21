@@ -125,7 +125,7 @@ the configuration file, the trained SVM model, and a test input PCD file:
 
 ## References
 
-[1] W.J. Beksi, J. Spruth and N. Papanikolopoulos, "CORE: A Cloud-based Object Recognition Engine for Robotics", IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pp. 4512-4517, 2015.  
+[1] W.J. Beksi, J. Spruth and N. Papanikolopoulos, "CORE: A Cloud-Based Object Recognition Engine for Robotics," IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pp. 4512-4517, 2015.  
 [2] Robot Operating System: http://www.ros.org  
 [3] Point Cloud Library: http://www.pointclouds.org  
 [4] CloudLab: https://www.cloudlab.us
