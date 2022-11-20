@@ -1,16 +1,51 @@
-## Cloud-based Object Recognition Engine (CORE)
+## Cloud-Based Object Recognition Engine 
 
-CORE is a framework for performing object recognition on 3D point cloud data 
-[1]. It includes machine learning classifiers, a Robot Operating System (ROS) 
-[2] module, and wraps existing data filters, feature descriptors, and 
-segmentation techniques found in the Point Cloud Library (PCL) [3]. The goal of 
-CORE is to leverage cloud computing facilities for the purpose of storing data, 
-training classifiers, and performing object recognition tasks offloaded by 
-network connected robots.
+### Overview
+An object recognition engine needs to extract discriminative features from data
+representing an object and accurately classify the object to be of practical use
+in robotics. Furthermore, the classification of the object must be rapidly
+performed in the presence of a voluminous stream of data. These conditions call
+for a distributed and scalable architecture that can utilize a cloud computing
+infrastructure for performing object recognition.
 
-## Building CORE on Ubuntu 16.04
+<p align="center">
+<img src='./misc/core_overview.png'>
+</p>
 
-First, install ROS Kinetic [2] followed by the software dependencies:                                                                                                        
+This repository provides source code for our 2015 IROS paper titled "[CORE: A
+Cloud-Based Object Recognition Engine for
+Robotics](https://www.researchgate.net/profile/William-Beksi/publication/308837835_CORE_A_Cloud-based_Object_Recognition_Engine_for_robotics/links/60b1d562299bf1f6d5804dd7/CORE-A-Cloud-based-Object-Recognition-Engine-for-robotics.pdf)."
+CORE is a framework for performing object recognition on 3D point cloud data. It
+includes machine learning classifiers, a [Robot Operating
+System](https://www.ros.org/) (ROS) module, and wraps existing data filters,
+feature descriptors, and segmentation techniques found in the [Point Cloud
+Library](https://pointclouds.org/)(PCL). The goal of CORE is to leverage cloud
+computing resources for the purpose of storing data, training classifiers, and
+performing object recognition tasks offloaded by network-connected robots.
+
+### Citation
+
+If you find this project useful, then please consider citing our work.
+
+```
+@inproceedings{beksi2015core,
+  title={Core: A Cloud-Based Object Recognition Engine for Robotics},
+  author={Beksi, William J and Spruth, John and Papanikolopoulos, Nikolaos},
+  booktitle={Proceedings of the IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
+  pages={4512--4517},
+  year={2015}
+}
+```
+
+### System Architecture
+
+<p align="center">
+<img src="./misc/core_architecture.png">
+</p>
+
+### Building CORE on Ubuntu
+
+First, install ROS followed by the software dependencies:                                                                                                        
 
     $ bash install.sh 
 
@@ -29,17 +64,15 @@ Then, build the ROS module:
     $ cd core/ros  
     $ catkin_make
 
-## Usage 
+### Remote Server Example
 
-### Remote server example
+#### Server Setup 
 
-#### Server setup 
-
-We use CloudLab [4] as our remote computing facility in this example. We've
-created a profile (disk image) named 'ubuntu-16\_04-ros-kinetic-full' that 
-captures the entire cloud environment. This profile is shared within CloudLab 
-under the project 'core-robotics'. It consists of one x86 node running Ubuntu 
-16.04 with ROS Kinetic installed.
+We use [CloudLab](https://www.cloudlab.us/) as our remote computing facility in
+this example. We've created a profile (disk image) named
+'ubuntu-16\_04-ros-kinetic-full' that captures the entire cloud environment.
+This profile is shared within CloudLab under the project 'core-robotics'. It
+consists of one x86 node running Ubuntu 16.04 with ROS Kinetic installed.
 
 After starting an experiment with the above profile, clone and build CORE:
 
@@ -70,7 +103,7 @@ Finally, in another terminal launch the CORE server nodes:
     $ source devel/setup.bash   
     $ roslaunch core_server core_server.launch  
 
-#### Client setup 
+#### Client Setup 
 
 Follow the instructions above for building CORE on the client (robot). We'll
 assume that you have an RGB-D sensor connected, such as the Asus Xtion, with the
@@ -91,12 +124,12 @@ the command 'if\_config'.
 Point clouds captured by the client will be preprocessed (filtered, culled, 
 compressed, etc.) and sent to the remote server for classification.
 
-### Standalone classification example
+### Standalone Classification Example
 
 In this example, we show how to use CORE for object classification using
 covariance descriptors and a support vector machine (SVM).
 
-#### Computing the covariance descriptor for a set of PCD files
+#### Computing the Covariance Descriptor for a Set of PCD Files
 
 First, copy over the CORE configuration file, 'core.cfg', from the 
 'configuration' subdirectory. To adjust filter, segmentation, descriptor, and 
@@ -107,7 +140,7 @@ the directory 'covariance\_dir':
 
     $ compute_covariance core.cfg pcd_categories covariance_dir  
 
-#### Learning an SVM model based on covariance descriptors
+#### Learning an SVM Model Based on Covariance Descriptors
 
 The learning parameter, gamma, is set in the configuration file 'core.cfg'. The
 model is constructed using the file 'cov\_categories' which contains the
@@ -116,16 +149,13 @@ previous step:
 
     $ svm_learn_model core.cfg cov_categories  
 
-#### SVM classification based on covariance descriptors
+#### SVM Classification Based on Covariance Descriptors
 
 Now we can predict the classification labels of objects in a point cloud given 
 the configuration file, the trained SVM model, and a test input PCD file:
 
     $ svm_predict_class core.cfg model.txt pc_1.pcd 
 
-## References
+### License 
 
-[1] W.J. Beksi, J. Spruth and N. Papanikolopoulos, "CORE: A Cloud-Based Object Recognition Engine for Robotics," IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pp. 4512-4517, 2015.  
-[2] Robot Operating System: http://www.ros.org  
-[3] Point Cloud Library: http://www.pointclouds.org  
-[4] CloudLab: https://www.cloudlab.us
+[![license](https://img.shields.io/badge/license-Apache%202-blue)](https://github.com/robotic-vision-lab/Cloud-Object-Recognition-Engine/blob/master/LICENSE)
