@@ -19,7 +19,7 @@ CORE is a framework for performing object recognition on 3D point cloud data. It
 includes machine learning classifiers, a [Robot Operating
 System](https://www.ros.org/) (ROS) module, and wraps existing data filters,
 feature descriptors, and segmentation techniques found in the [Point Cloud
-Library](https://pointclouds.org/) (PCL). The goal of CORE is to leverage cloud
+Library](https://pointclouds.org/). The goal of CORE is to leverage cloud
 computing resources for the purpose of storing data, training classifiers, and
 performing object recognition tasks offloaded by network-connected robots.
 
