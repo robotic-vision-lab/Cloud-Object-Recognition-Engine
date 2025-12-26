@@ -9,7 +9,7 @@ for a distributed and scalable architecture that can utilize a cloud computing
 infrastructure for performing object recognition.
 
 <p align="center">
-<img src='./misc/core_overview.png'>
+  <img src="./misc/core_overview.png" alt="overview">
 </p>
 
 This repository provides source code for our 2015 IROS paper titled "[CORE: A
@@ -40,7 +40,7 @@ If you find this project useful, then please consider citing our work.
 ### System Architecture
 
 <p align="center">
-<img src="./misc/core_architecture.png">
+  <img src="./misc/core_architecture.png" alt="system architecture">
 </p>
 
 ### Building CORE on Ubuntu
